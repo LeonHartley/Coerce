@@ -1,6 +1,50 @@
 # Coerce
 Soon-to-be open source repository of the Coerce java libraries.
 
+## How are messages structured?
+### Request Object
+```java
+public class PlayerDataRequest extends MessageRequest<PlayerDataResponse> {
+    private final int playerId;
+
+    public PlayerDataRequest(final int playerId) {
+        super(UUID.randomUUID(), PlayerDataResponse.class);
+
+        this.playerId = playerId;
+    }
+
+    @Override
+    protected void onResponseReceived(PlayerDataResponse response) {
+        System.out.println("Received user with username: " + response.getUsername());
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+}
+```
+
+### Response Object
+```java
+public class PlayerDataResponse implements MessageResponse {
+    private final String username;
+    private final String email;
+
+    public PlayerDataResponse(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+}
+```
+
 ## How do I request messages?
 To send requests, first we need to connect to the messaging server, assign an alias to our service. Once that's done and we're fully connected, we can begin requesting messages.
 
