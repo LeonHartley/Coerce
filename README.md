@@ -5,10 +5,10 @@ Soon-to-be open source repository of the Coerce java libraries.
 To send requests, first we need to connect to the messaging server, assign an alias to our service. Once that's done and we're fully connected, we can begin requesting messages.
 
 ```java
-this.messagingClient = MessagingClient.create("test-client", configuration);
+final MessagingClient messagingClient = MessagingClient.create("test-client", configuration);
 
-this.messagingClient.connect("localhost", 8080, (client) -> {
-  this.messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
+messagingClient.connect("localhost", 8080, (client) -> {
+  messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
 });
 ```
 
