@@ -63,7 +63,7 @@ public class NioChannel {
     public SocketAddress getAddress() {
         try {
             return this.socketChannel.getRemoteAddress();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

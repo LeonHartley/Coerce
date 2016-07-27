@@ -1,7 +1,6 @@
 package io.coerce.commons.config;
 
 import com.google.gson.JsonObject;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.coerce.commons.io.FileUtil;
 import io.coerce.commons.json.JsonUtil;

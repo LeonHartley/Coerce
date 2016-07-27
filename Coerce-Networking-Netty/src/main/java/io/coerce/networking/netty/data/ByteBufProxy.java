@@ -3,7 +3,6 @@ package io.coerce.networking.netty.data;
 import io.coerce.networking.channels.NetworkBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
-import org.apache.commons.lang.ArrayUtils;
 
 import java.nio.charset.Charset;
 
@@ -113,7 +112,7 @@ public class ByteBufProxy implements NetworkBuffer<ByteBuf> {
     public byte[] readBytes(int length) {
         final byte[] bytes = new byte[length];
 
-        for(int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             bytes[i] = this.readByte();
         }
 

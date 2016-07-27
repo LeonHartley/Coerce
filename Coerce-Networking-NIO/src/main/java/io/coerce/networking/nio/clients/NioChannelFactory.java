@@ -13,8 +13,8 @@ import java.nio.channels.SocketChannel;
 
 @Singleton
 public class NioChannelFactory {
-    private NioEventExecutorGroup ioGroup;
     private final Logger log = LogManager.getLogger(NioChannelFactory.class);
+    private NioEventExecutorGroup ioGroup;
 
     @Inject
     public NioChannelFactory() {

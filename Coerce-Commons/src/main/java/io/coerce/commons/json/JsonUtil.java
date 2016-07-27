@@ -7,7 +7,7 @@ public class JsonUtil {
     private static Gson gsonInstance;
 
     public static Gson getGsonInstance() {
-        if(gsonInstance == null) {
+        if (gsonInstance == null) {
             gsonInstance = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
         }
 

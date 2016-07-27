@@ -16,7 +16,7 @@ public class MessageWriteQueue implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             final Object object = this.queue.poll();
 
             this.networkChannel.writeAndFlush(object);

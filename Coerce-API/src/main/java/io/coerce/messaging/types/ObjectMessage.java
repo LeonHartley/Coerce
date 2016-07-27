@@ -2,7 +2,6 @@ package io.coerce.messaging.types;
 
 import com.google.gson.Gson;
 import io.coerce.messaging.Message;
-import io.coerce.networking.codec.strings.StringEncoder;
 
 import java.util.UUID;
 

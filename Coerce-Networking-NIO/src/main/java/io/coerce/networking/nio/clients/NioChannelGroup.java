@@ -21,7 +21,7 @@ public class NioChannelGroup {
     public void deregisterChannel(UUID id) {
         final NioChannel nioChannel = this.channels.get(id);
 
-        if(nioChannel == null) {
+        if (nioChannel == null) {
             return;
         }
 

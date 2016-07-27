@@ -12,7 +12,6 @@
       "threads": 2
     }
   },
-
   "modules": {
     "networking": {
       "io.coerce.networking.NetworkingService": "io.coerce.networking.netty.NettyNetworkingService",

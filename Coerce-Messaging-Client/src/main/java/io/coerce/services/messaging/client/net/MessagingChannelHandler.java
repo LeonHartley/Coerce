@@ -15,14 +15,11 @@ import org.apache.logging.log4j.Logger;
 
 public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMessage> {
 
-    private String serviceAlias;
-
     private final JsonMessageEncoder messageEncoder;
     private final JsonMessageDecoder messageDecoder;
-
-    private NetworkChannel networkChannel;
-
     private final Logger log = LogManager.getLogger(MessagingChannelHandler.class.getName());
+    private String serviceAlias;
+    private NetworkChannel networkChannel;
 
     public MessagingChannelHandler(final JsonMessageEncoder messageEncoder, final JsonMessageDecoder messageDecoder) {
         this.messageEncoder = messageEncoder;
@@ -76,12 +73,12 @@ public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMess
         }
     }
 
-    public void setServiceAlias(final String serviceAlias) {
-        this.serviceAlias = serviceAlias;
-    }
-
     public String getServiceAlias() {
         return this.serviceAlias;
+    }
+
+    public void setServiceAlias(final String serviceAlias) {
+        this.serviceAlias = serviceAlias;
     }
 
     @Override

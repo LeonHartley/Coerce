@@ -22,10 +22,9 @@ import java.util.function.Consumer;
 
 public class NettyNetworkingClient implements NetworkingClient {
 
-    private NetworkChannelHandler handler;
-
     private final Configuration configuration;
     private final Bootstrap bootstrap;
+    private NetworkChannelHandler handler;
     private EventLoopGroup eventLoopGroup;
 
     @Inject

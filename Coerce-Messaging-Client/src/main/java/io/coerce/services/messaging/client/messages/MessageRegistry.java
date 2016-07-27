@@ -4,7 +4,9 @@ import io.coerce.commons.json.JsonUtil;
 import io.coerce.messaging.types.ObjectMessage;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
@@ -21,6 +23,10 @@ public class MessageRegistry {
     public MessageRegistry() {
         this.entries = new ConcurrentHashMap<>();
         this.messageObservers = new ConcurrentHashMap<>();
+    }
+
+    public static MessageRegistry getInstance() {
+        return registry;
     }
 
     public void awaitResponse(MessageRequest messageRequest) {
@@ -42,13 +48,13 @@ public class MessageRegistry {
 
                 consumer.accept(JsonUtil.getGsonInstance().fromJson(message.getPayload(), clazz));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public <T extends MessageRequest> void observeForMessages(Class<T> messageRequestClass, Consumer<T> consumer) {
-        if(!this.messageObservers.containsKey(messageRequestClass)) {
+        if (!this.messageObservers.containsKey(messageRequestClass)) {
             this.messageObservers.put(messageRequestClass, new CopyOnWriteArrayList<>());
         }
 
@@ -57,9 +63,5 @@ public class MessageRegistry {
 
     public boolean hasObservers(final Class<? extends MessageRequest> requestClass) {
         return this.messageObservers.containsKey(requestClass) && this.messageObservers.get(requestClass).size() != 0;
-    }
-
-    public static MessageRegistry getInstance() {
-        return registry;
     }
 }

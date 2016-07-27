@@ -13,9 +13,8 @@ public class NioEventExecutorGroup {
     private final int poolSize = 2;
 
     private final Logger log = LogManager.getLogger(NioEventExecutorGroup.class);
-
-    private List<NioEventExecutor> eventExecutors;
     private final Provider<NioEventExecutor> executorProvider;
+    private List<NioEventExecutor> eventExecutors;
 
     @Inject
     public NioEventExecutorGroup(Provider<NioEventExecutor> executorProvider) throws Exception {
@@ -36,9 +35,9 @@ public class NioEventExecutorGroup {
 
     public void register(AbstractSelectableChannel channel, GroupPurpose key, Object attachment) {
         for (NioEventExecutor eventExecutor : this.eventExecutors) {
-            if(channel.isRegistered() && key == GroupPurpose.IO) break;
+            if (channel.isRegistered() && key == GroupPurpose.IO) break;
 
-            if(attachment != null) {
+            if (attachment != null) {
                 eventExecutor.register(channel, key, attachment);
             } else {
                 eventExecutor.register(channel, key);

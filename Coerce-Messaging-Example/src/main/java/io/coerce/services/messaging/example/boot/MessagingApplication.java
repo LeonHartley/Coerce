@@ -3,10 +3,6 @@ package io.coerce.services.messaging.example.boot;
 import io.coerce.commons.config.Configuration;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataRequest;
-import io.coerce.services.messaging.example.boot.messages.time.TimeMessageRequest;
-import io.coerce.services.messaging.example.boot.messages.time.TimeMessageResponse;
-
-import java.util.concurrent.*;
 
 public class MessagingApplication {
 

@@ -1,7 +1,6 @@
 package io.coerce.services.modules;
 
 import com.google.inject.AbstractModule;
-import com.sun.deploy.config.Config;
 import io.coerce.commons.config.Configuration;
 import io.coerce.services.configuration.ServiceConfiguration;
 

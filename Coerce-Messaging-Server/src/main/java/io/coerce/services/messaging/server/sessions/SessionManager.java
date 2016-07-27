@@ -14,6 +14,10 @@ public class SessionManager {
         this.sessions = new ConcurrentHashMap<>();
     }
 
+    public static SessionManager getInstance() {
+        return sessionManager;
+    }
+
     public Session getSession(final String alias) {
         return this.sessions.get(alias);
     }
@@ -28,9 +32,5 @@ public class SessionManager {
         this.sessions.put(alias, session);
 
         return session;
-    }
-
-    public static SessionManager getInstance() {
-        return sessionManager;
     }
 }

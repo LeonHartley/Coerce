@@ -19,6 +19,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMess
     private final JsonMessageDecoder messageDecoder;
 
     private final Logger log = LogManager.getLogger(MessagingChannelHandler.class);
+    private volatile int sentMessages = 0;
 
     @Inject
     public MessagingChannelHandler(final JsonMessageEncoder messageEncoder, final JsonMessageDecoder messageDecoder) {
@@ -33,7 +34,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMess
 
     @Override
     public void onChannelInactive(NetworkChannel networkChannel) {
-        if(networkChannel.getAttachment(Session.class) != null) {
+        if (networkChannel.getAttachment(Session.class) != null) {
             SessionManager.getInstance().removeSession(networkChannel.getAttachment(Session.class).getAlias());
         }
 
@@ -45,11 +46,9 @@ public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMess
         log.error("Error caught in networking", error);
     }
 
-    private volatile int sentMessages = 0;
-
     @Override
     public void onMessageReceived(ObjectMessage message, NetworkChannel networkChannel) {
-        if(message.getPayloadType().equals("java.lang.String") && networkChannel.getAttachment(Session.class) == null) {
+        if (message.getPayloadType().equals("java.lang.String") && networkChannel.getAttachment(Session.class) == null) {
             final String serviceAlias = (String) message.getPayload();
 
             log.info("Service connected {}", serviceAlias, networkChannel.getId());

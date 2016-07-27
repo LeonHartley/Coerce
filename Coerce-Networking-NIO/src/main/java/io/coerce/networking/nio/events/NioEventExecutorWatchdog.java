@@ -9,16 +9,16 @@ public class NioEventExecutorWatchdog implements Runnable {
         this.globalWatchdogThread = new Thread(this);
     }
 
-    @Override
-    public void run() {
-
-    }
-
     public static NioEventExecutorWatchdog getInstance() {
-        if(watchdog == null) {
+        if (watchdog == null) {
             watchdog = new NioEventExecutorWatchdog();
         }
 
         return watchdog;
+    }
+
+    @Override
+    public void run() {
+
     }
 }

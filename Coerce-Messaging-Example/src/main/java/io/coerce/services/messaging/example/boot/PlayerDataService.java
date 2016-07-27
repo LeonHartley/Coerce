@@ -5,12 +5,8 @@ import io.coerce.commons.config.Configuration;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataRequest;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataResponse;
-import io.coerce.services.messaging.example.boot.messages.time.TimeMessageRequest;
 
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerDataService {
     private static final Map<Integer, String> database = Maps.newConcurrentMap();

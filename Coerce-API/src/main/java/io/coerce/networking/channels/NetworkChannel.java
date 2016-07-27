@@ -8,7 +8,7 @@ public abstract class NetworkChannel {
     private final Map<Class<?>, Object> attachments = new ConcurrentHashMap<>();
 
     public <T> T getAttachment(Class<T> attachmentClass) {
-        if(this.attachments.containsKey(attachmentClass)) {
+        if (this.attachments.containsKey(attachmentClass)) {
             return (T) this.attachments.get(attachmentClass);
         }
 

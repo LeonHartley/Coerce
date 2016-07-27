@@ -15,13 +15,10 @@ import java.nio.channels.ServerSocketChannel;
 @Singleton
 public class NioNetworkingService implements NetworkingService {
     private static final Logger log = LogManager.getLogger(NioNetworkingService.class);
-
-    private ServerSocketChannel serverSocketChannel;
-
     private final NioChannelFactory channelFactory;
     private final NioChannelGroup channelGroup;
-
     private final NioEventExecutorGroup acceptGroup;
+    private ServerSocketChannel serverSocketChannel;
 
     @Inject
     public NioNetworkingService(NioChannelFactory channelFactory, NioChannelGroup channelGroup,

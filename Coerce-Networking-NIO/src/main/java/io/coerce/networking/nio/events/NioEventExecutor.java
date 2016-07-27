@@ -21,10 +21,8 @@ public class NioEventExecutor implements Runnable {
     private final Logger log;
     private final Thread eventThread;
     private final NioChannelFactory channelFactory;
-
-    private Selector selector;
-
     private final String eventExecutorId;
+    private Selector selector;
 
     @Inject
     public NioEventExecutor(NioChannelFactory channelFactory) {

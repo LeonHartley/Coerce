@@ -21,7 +21,7 @@ public class EncoderProxy extends MessageToByteEncoder<Object> {
                     new ByteBufProxy(byteBuf));
 
             byteBuf.writeBytes(new byte[]{'E', 'O', 'F', '\n'});
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

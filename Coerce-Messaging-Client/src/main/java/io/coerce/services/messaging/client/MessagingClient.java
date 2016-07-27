@@ -36,6 +36,11 @@ public final class MessagingClient {
         this.client.configure(channelHandler);
     }
 
+    public static MessagingClient create(final String alias, Configuration configuration) {
+        return new MessagingClient(alias, new NettyNetworkingClient(configuration),
+                new MessagingChannelHandler(new JsonMessageEncoder(), new JsonMessageDecoder()));
+    }
+
     public void connect(String host, int port, Consumer<MessagingClient> onConnect) {
         this.client.connect(host, port, false, (client) -> {
             this.sendMessage(new ObjectMessage(UUID.randomUUID(), this.alias, "master", "java.lang.String", this.alias));
@@ -80,10 +85,5 @@ public final class MessagingClient {
 
     public String getAlias() {
         return this.alias;
-    }
-
-    public static MessagingClient create(final String alias, Configuration configuration) {
-        return new MessagingClient(alias, new NettyNetworkingClient(configuration),
-                new MessagingChannelHandler(new JsonMessageEncoder(), new JsonMessageDecoder()));
     }
 }

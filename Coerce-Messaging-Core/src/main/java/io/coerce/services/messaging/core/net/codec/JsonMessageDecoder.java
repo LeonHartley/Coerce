@@ -13,7 +13,7 @@ public class JsonMessageDecoder implements ObjectDecoder<ObjectMessage> {
 
     @Override
     public ObjectMessage decode(NetworkBuffer buffer, NetworkChannel channel) {
-        if(buffer.readableBytes() < 4) {
+        if (buffer.readableBytes() < 4) {
             return null;
         }
 
@@ -21,7 +21,7 @@ public class JsonMessageDecoder implements ObjectDecoder<ObjectMessage> {
 
         final int length = buffer.readInteger();
 
-        if(length < 0 || buffer.readableBytes() < length) {
+        if (length < 0 || buffer.readableBytes() < length) {
             buffer.resetReaderIndex();
             return null;
         }

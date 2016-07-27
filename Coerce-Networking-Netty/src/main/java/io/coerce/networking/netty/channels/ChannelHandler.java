@@ -6,7 +6,6 @@ import io.coerce.networking.netty.NettyNetworkingService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -30,7 +29,7 @@ public class ChannelHandler extends SimpleChannelInboundHandler<Object> {
 
         this.channelHandler.onChannelActive(networkChannel);
 
-        if(this.onChannelActiveConsumer != null) {
+        if (this.onChannelActiveConsumer != null) {
             this.onChannelActiveConsumer.accept(networkChannel);
         }
     }
@@ -41,7 +40,7 @@ public class ChannelHandler extends SimpleChannelInboundHandler<Object> {
         // then we need to dispose of the NetworkChannel object.
         final NetworkChannel networkChannel = this.getNetworkChannel(ctx);
 
-        if(networkChannel == null) {
+        if (networkChannel == null) {
             return;
         }
 
