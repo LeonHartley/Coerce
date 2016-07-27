@@ -1,5 +1,5 @@
 # Coerce
-Soon-to-be open source repository of the Coerce java libraries.
+Coerce is a set of Java libraries created to make high-concurrent and high-performance application development easier. It is distributed under the Apache v2 license.
 
 ## How are messages structured?
 ### Request Object
@@ -46,7 +46,7 @@ public class PlayerDataResponse implements MessageResponse {
 ```
 
 ## How do I request messages?
-To send requests, first we need to connect to the messaging server, assign an alias to our service. Once that's done and we're fully connected, we can begin requesting messages.
+To send requests, first we need to connect to the messaging server and assign an alias to our service. Once that's done and we're fully connected, we can begin requesting messages.
 
 ```java
 final MessagingClient messagingClient = MessagingClient.create("test-client", configuration);
@@ -71,3 +71,8 @@ messagingClient.connect("localhost", 8080, (client) -> {
   // We don't need to do anything here as we aren't sending any messages.
 });
 ```
+
+
+## Author
+Leon Hartley <lhartley97@gmail.com>
+
