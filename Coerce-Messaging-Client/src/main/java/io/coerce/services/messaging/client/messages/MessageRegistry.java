@@ -1,7 +1,7 @@
 package io.coerce.services.messaging.client.messages;
 
 import io.coerce.commons.json.JsonUtil;
-import io.coerce.messaging.types.ObjectMessage;
+import io.coerce.messaging.types.StringMessage;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class MessageRegistry {
         }
     }
 
-    public <T extends MessageRequest> void processObservers(Class<T> clazz, final ObjectMessage message) {
+    public <T extends MessageRequest> void processObservers(Class<T> clazz, final StringMessage message) {
         try {
             for (Consumer<? extends MessageRequest> requestConsumer : this.messageObservers.get(clazz)) {
                 final Consumer<T> consumer = ((Consumer<T>) requestConsumer);

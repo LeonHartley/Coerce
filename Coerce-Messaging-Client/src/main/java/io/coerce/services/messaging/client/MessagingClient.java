@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import io.coerce.commons.config.Configuration;
 import io.coerce.commons.json.JsonUtil;
 import io.coerce.messaging.Message;
-import io.coerce.messaging.types.ObjectMessage;
+import io.coerce.messaging.types.StringMessage;
 import io.coerce.networking.NetworkingClient;
 import io.coerce.networking.netty.clients.NettyNetworkingClient;
 import io.coerce.services.messaging.client.messages.MessageRegistry;
@@ -43,7 +43,7 @@ public final class MessagingClient {
 
     public void connect(String host, int port, Consumer<MessagingClient> onConnect) {
         this.client.connect(host, port, false, (client) -> {
-            this.sendMessage(new ObjectMessage(UUID.randomUUID(), this.alias, "master", "java.lang.String", this.alias));
+            this.sendMessage(new StringMessage(UUID.randomUUID(), this.alias, "master", "java.lang.String", this.alias));
 
             onConnect.accept(this);
         });
@@ -59,7 +59,7 @@ public final class MessagingClient {
 
             messageRequest.setSender(this.alias);
 
-            this.channelHandler.getLastChannel().writeAndFlush(new ObjectMessage(messageRequest.getMessageId(), this.alias,
+            this.channelHandler.getLastChannel().writeAndFlush(new StringMessage(messageRequest.getMessageId(), this.alias,
                     destination, messageRequest.getClass().getName(), JsonUtil.getGsonInstance().toJson(messageRequest)));
         });
     }
@@ -71,7 +71,7 @@ public final class MessagingClient {
     public void sendResponse(UUID messageId, final String destination, final MessageResponse messageResponse) {
         this.executorService.submit(() -> {
             try {
-                this.channelHandler.getLastChannel().writeAndFlush(new ObjectMessage(messageId, this.alias,
+                this.channelHandler.getLastChannel().writeAndFlush(new StringMessage(messageId, this.alias,
                         destination, messageResponse.getClass().getName(), JsonUtil.getGsonInstance().toJson(messageResponse)));
             } catch (Exception e) {
                 e.printStackTrace();

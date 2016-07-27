@@ -1,13 +1,10 @@
 package io.coerce.messaging.types;
 
-import com.google.gson.Gson;
 import io.coerce.messaging.Message;
 
 import java.util.UUID;
 
-public class ObjectMessage implements Message {
-    private static final Gson gson = new Gson();
-
+public class StringMessage implements Message {
     private final UUID id;
     private final String sender;
     private final String target;
@@ -15,7 +12,7 @@ public class ObjectMessage implements Message {
     private final String payloadType;
     private final String messagePayload;
 
-    public ObjectMessage(UUID id, String sender, String target, String payloadType, String payload) {
+    public StringMessage(UUID id, String sender, String target, String payloadType, String payload) {
         this.id = id;
         this.sender = sender;
         this.target = target;

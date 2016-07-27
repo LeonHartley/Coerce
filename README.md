@@ -74,5 +74,5 @@ messagingClient.connect("localhost", 8080, (client) -> {
 
 
 ## Author
-Leon Hartley <lhartley97@gmail.com>
+Leon Hartley (<lhartley97@gmail.com>)
 

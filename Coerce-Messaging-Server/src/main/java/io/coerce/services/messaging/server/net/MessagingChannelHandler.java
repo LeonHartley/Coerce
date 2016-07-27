@@ -1,7 +1,7 @@
 package io.coerce.services.messaging.server.net;
 
 import com.google.inject.Inject;
-import io.coerce.messaging.types.ObjectMessage;
+import io.coerce.messaging.types.StringMessage;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.channels.NetworkChannelHandler;
 import io.coerce.networking.codec.ObjectDecoder;
@@ -13,7 +13,7 @@ import io.coerce.services.messaging.server.sessions.SessionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMessage> {
+public class MessagingChannelHandler implements NetworkChannelHandler<StringMessage> {
 
     private final JsonMessageEncoder messageEncoder;
     private final JsonMessageDecoder messageDecoder;
@@ -47,7 +47,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMess
     }
 
     @Override
-    public void onMessageReceived(ObjectMessage message, NetworkChannel networkChannel) {
+    public void onMessageReceived(StringMessage message, NetworkChannel networkChannel) {
         if (message.getPayloadType().equals("java.lang.String") && networkChannel.getAttachment(Session.class) == null) {
             final String serviceAlias = (String) message.getPayload();
 
@@ -75,12 +75,12 @@ public class MessagingChannelHandler implements NetworkChannelHandler<ObjectMess
     }
 
     @Override
-    public ObjectEncoder<ObjectMessage> getObjectEncoder() {
+    public ObjectEncoder<StringMessage> getObjectEncoder() {
         return this.messageEncoder;
     }
 
     @Override
-    public ObjectDecoder<ObjectMessage> getObjectDecoder() {
+    public ObjectDecoder<StringMessage> getObjectDecoder() {
         return this.messageDecoder;
     }
 
