@@ -24,7 +24,6 @@ public class HttpRequestService implements HttpRoutingService {
 
     @Override
     public void addRoute(HttpRequestType type, String pathPattern, BiConsumer<HttpRequest, HttpResponse> route) {
-
         if(!this.requestConsumers.get(type).containsKey(pathPattern)) {
             this.requestConsumers.get(type).put(pathPattern, new CopyOnWriteArrayList<>());
         }
