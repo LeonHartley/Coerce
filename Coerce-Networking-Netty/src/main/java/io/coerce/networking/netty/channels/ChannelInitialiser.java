@@ -29,7 +29,11 @@ public class ChannelInitialiser extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         socketChannel.config().setTrafficClass(0x18);
 
-        socketChannel.pipeline().addLast("framer", new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Unpooled.wrappedBuffer(new byte[]{'E', 'O', 'F', '\n'})));
+        if(handler.getObjectEncoder().hasDelimiter()) {
+            socketChannel.pipeline().addLast("framer", new DelimiterBasedFrameDecoder(Integer.MAX_VALUE,
+                    Unpooled.wrappedBuffer(handler.getObjectEncoder().getDelimiter())));
+        }
+
         socketChannel.pipeline().addLast("encoder", new EncoderProxy(this.handler.getObjectEncoder()));
         socketChannel.pipeline().addLast("decoder", new DecoderProxy(this.handler.getObjectDecoder()));
 

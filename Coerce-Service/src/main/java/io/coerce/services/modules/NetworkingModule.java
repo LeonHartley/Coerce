@@ -16,6 +16,7 @@ public class NetworkingModule extends AbstractModule {
     protected void configure() {
         for (Map.Entry<String, String> mapping : this.serviceMappings.entrySet()) {
             try {
+
                 final Class<?> fromClass = Class.forName(mapping.getKey());
                 final Class<?> toClass = Class.forName(mapping.getValue());
 

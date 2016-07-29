@@ -20,7 +20,10 @@ public class EncoderProxy extends MessageToByteEncoder<Object> {
             this.objectEncoder.encode(o, channelHandlerContext.channel().attr(NettyNetworkingService.channelAttributeKey).get(),
                     new ByteBufProxy(byteBuf));
 
-            byteBuf.writeBytes(new byte[]{'E', 'O', 'F', '\n'});
+            if(this.objectEncoder.hasDelimiter()) {
+                byteBuf.writeBytes(this.objectEncoder.getDelimiter());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

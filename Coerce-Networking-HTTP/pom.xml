@@ -20,5 +20,11 @@
             <artifactId>Coerce-API</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>Coerce</groupId>
+            <artifactId>Coerce-Commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

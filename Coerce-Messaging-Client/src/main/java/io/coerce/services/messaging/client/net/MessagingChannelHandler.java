@@ -1,5 +1,6 @@
 package io.coerce.services.messaging.client.net;
 
+import com.google.common.collect.Maps;
 import io.coerce.commons.json.JsonUtil;
 import io.coerce.messaging.types.StringMessage;
 import io.coerce.networking.channels.NetworkChannel;
@@ -13,7 +14,11 @@ import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
+
 public class MessagingChannelHandler implements NetworkChannelHandler<StringMessage> {
+
+    private final Map<String, Class> classCache = Maps.newConcurrentMap();
 
     private final JsonMessageEncoder messageEncoder;
     private final JsonMessageDecoder messageDecoder;
@@ -46,7 +51,14 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
     @Override
     public void onMessageReceived(StringMessage message, NetworkChannel networkChannel) {
         try {
-            final Class<?> messageClazz = Class.forName(message.getPayloadType());
+            Class<?> messageClazz = this.classCache.get(message.getPayloadType());
+
+            if(messageClazz == null) {
+                final Class clazz = Class.forName(message.getPayloadType());
+
+                this.classCache.put(message.getPayloadType(), clazz);
+                messageClazz = clazz;
+            }
 
             try {
                 // try and cast the message class to a usable type.

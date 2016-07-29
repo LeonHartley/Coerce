@@ -18,4 +18,14 @@ public class JsonMessageEncoder implements ObjectEncoder<StringMessage> {
 
         return out;
     }
+
+    @Override
+    public boolean hasDelimiter() {
+        return true;
+    }
+
+    @Override
+    public byte[] getDelimiter() {
+        return new byte[] { 'E', 'O', 'F', '\n' };
+    }
 }
