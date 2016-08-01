@@ -3,6 +3,7 @@ package io.coerce.http.types;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.HttpPayload;
 import io.coerce.networking.http.responses.HttpResponse;
+import io.coerce.networking.http.responses.HttpResponseCode;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +13,7 @@ public class DefaultHttpResponse implements HttpResponse {
 
     private final NetworkChannel networkChannel;
 
-    private int responseCode = 200;
+    private HttpResponseCode responseType = HttpResponseCode.OK;
     private String contentType = "text/plain";
 
     private final Map<String, String> headers;
@@ -45,7 +46,7 @@ public class DefaultHttpResponse implements HttpResponse {
 
         // build the http payload & send it
         this.networkChannel.writeAndClose(new ResponsePayload(
-                HTTP_VERSION + " " + this.responseCode,
+                HTTP_VERSION + " " + this.responseType.getResponseCode() + " " + this.responseType.getResponse(),
                 this.headers,
                 string.getBytes()
         ));
@@ -57,13 +58,13 @@ public class DefaultHttpResponse implements HttpResponse {
     }
 
     @Override
-    public int getResponseCode() {
-        return this.responseCode;
+    public HttpResponseCode getResponseCode() {
+        return this.responseType;
     }
 
     @Override
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
+    public void setResponseCode(HttpResponseCode responseType) {
+        this.responseType = responseType;
     }
 
     private class ResponsePayload implements HttpPayload {

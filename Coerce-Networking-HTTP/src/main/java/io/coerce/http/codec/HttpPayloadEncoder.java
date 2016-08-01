@@ -13,13 +13,13 @@ public class HttpPayloadEncoder implements ObjectEncoder<HttpPayload> {
     public NetworkBuffer encode(HttpPayload object, NetworkChannel channel, NetworkBuffer out) {
         final StringBuilder httpResponseBuilder = new StringBuilder();
 
-        httpResponseBuilder.append(object.getHeader() + "\n");
+        httpResponseBuilder.append(object.getHeader() + "\r\n");
 
         for (Map.Entry<String, String> header : object.getHeaders().entrySet()) {
-            httpResponseBuilder.append(header.getKey() + ":" + header.getValue() + '\n');
+            httpResponseBuilder.append(header.getKey() + ":" + header.getValue() + "\r\n");
         }
 
-        httpResponseBuilder.append("\n");
+        httpResponseBuilder.append("\r\n");
 
         out.writeBytes(Bytes.concat(
                 httpResponseBuilder.toString().getBytes(),

@@ -6,6 +6,7 @@ import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
 import io.coerce.networking.http.requests.HttpRoutingService;
 import io.coerce.networking.http.responses.HttpResponse;
+import io.coerce.networking.http.responses.HttpResponseCode;
 import org.bigtesting.routd.Route;
 import org.bigtesting.routd.TreeRouter;
 
@@ -61,7 +62,7 @@ public class HttpRequestService implements HttpRoutingService {
         }
 
         response.setContentType("text/html");
-        response.setResponseCode(404);
+        response.setResponseCode(HttpResponseCode.NOT_FOUND);
 
         response.send("404 not found");
     }

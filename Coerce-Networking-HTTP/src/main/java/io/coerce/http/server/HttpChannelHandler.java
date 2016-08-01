@@ -37,7 +37,7 @@ public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
 
     @Override
     public void onChannelError(Throwable error, NetworkChannel networkChannel) {
-
+        error.printStackTrace();
     }
 
     @Override
@@ -46,6 +46,7 @@ public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
             ((DefaultHttpRequest) message).setNetworkChannel(networkChannel);
         }
 
+        // TODO: request logging
         this.requestQueue.enqueue((HttpRequest) message);
     }
 

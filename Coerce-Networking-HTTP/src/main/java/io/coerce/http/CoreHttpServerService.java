@@ -30,7 +30,7 @@ public class CoreHttpServerService implements HttpServerService {
 
         this.networkingService.configure(new HttpChannelHandler(requestQueue));
 
-        requestQueue.initialise(4);
+        requestQueue.initialise(8);
 
         this.networkingService.startService(host, port);
     }

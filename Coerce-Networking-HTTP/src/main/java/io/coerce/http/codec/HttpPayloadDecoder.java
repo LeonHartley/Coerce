@@ -14,7 +14,7 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
     @Override
     public HttpPayload decode(NetworkBuffer buffer, NetworkChannel channel) {
         final String requestData = buffer.toString(Charset.defaultCharset());
-        final String[] httpRequestTypeParts = requestData.split("\n")[0].split(" ");
+        final String[] httpRequestTypeParts = requestData.split("\r\n")[0].split(" ");
 
         final HttpRequestType type = HttpRequestType.valueOf(httpRequestTypeParts[0]);
         final String location = httpRequestTypeParts[1];

@@ -1,7 +1,5 @@
 package io.coerce.networking.http.responses;
 
-import io.coerce.networking.http.HttpPayload;
-
 import java.util.Map;
 
 public interface HttpResponse {
@@ -13,7 +11,7 @@ public interface HttpResponse {
 
     void renderView(final String view, Map<String, Object> model);
 
-    int getResponseCode();
+    HttpResponseCode getResponseCode();
 
-    void setResponseCode(int responseCode);
+    void setResponseCode(HttpResponseCode type);
 }

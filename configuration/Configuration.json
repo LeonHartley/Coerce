@@ -1,18 +1,18 @@
 {
   "config": {
     "nettyServer": {
-      "ioGroup": 1,
-      "channelGroup": 1,
-      "acceptGroup": 1,
+      "ioGroup": 4,
+      "channelGroup": 4,
+      "acceptGroup": 4,
       "epoll": true,
       "backlog": 100
     },
     "nettyClient": {
       "epoll": true,
-      "threads": 1
+      "threads": 4
     },
     "httpServer": {
-      "requestQueueCapacity": 1000
+      "requestQueueCapacity": 10000
     }
   },
   "modules": {
