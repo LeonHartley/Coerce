@@ -40,12 +40,12 @@ public class DefaultHttpResponse implements HttpResponse {
         this.headers.put("Content-Type", this.getContentType());
 
         if(this.networkChannel == null) {
-            System.out.println("whyyy");
+            return;
         }
 
         // build the http payload & send it
         this.networkChannel.writeAndClose(new ResponsePayload(
-                HTTP_VERSION + this.responseCode + " OK",
+                HTTP_VERSION + " " + this.responseCode,
                 this.headers,
                 string.getBytes()
         ));

@@ -61,6 +61,8 @@ public class HttpRequestService implements HttpRoutingService {
         }
 
         response.setContentType("text/html");
+        response.setResponseCode(404);
+
         response.send("404 not found");
     }
 }
