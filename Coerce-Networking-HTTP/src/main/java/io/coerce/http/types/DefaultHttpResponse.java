@@ -1,6 +1,5 @@
 package io.coerce.http.types;
 
-import io.coerce.http.server.responses.ThymeleafViewParser;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.HttpPayload;
 import io.coerce.networking.http.responses.HttpResponse;
@@ -44,7 +43,7 @@ public class DefaultHttpResponse implements HttpResponse {
         this.headers.put("Content-Length", "" + data.length);
         this.headers.put("Content-Type", this.getContentType());
 
-        if(this.networkChannel == null) {
+        if (this.networkChannel == null) {
             return;
         }
 
@@ -59,7 +58,17 @@ public class DefaultHttpResponse implements HttpResponse {
     @Override
     public void renderView(String view, Map<String, Object> model) {
         // build the view along with the model then we build the payload then send it.
-        this.send(this.viewParser.render(view, model));
+        this.contentType = "text/html";
+        try {
+            this.send(this.viewParser.render(view, model));
+        } catch (Exception e) {
+            // error 500
+            this.setResponseCode(HttpResponseCode.INTERNAL_ERROR);
+            this.setContentType("text/plain");
+
+            // TODO: Only send the exception information when the server is running in development mode.
+            this.send("Internal server error\n\n" + e.getMessage());
+        }
     }
 
     @Override

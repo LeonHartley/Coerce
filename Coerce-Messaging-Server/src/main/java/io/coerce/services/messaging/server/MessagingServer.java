@@ -10,6 +10,7 @@ import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
+import io.coerce.services.messaging.server.web.MessagingWebInterface;
 
 import java.util.Map;
 
@@ -19,6 +20,9 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
     private final Configuration configuration;
     private final MessagingChannelHandler channelHandler;
     private final HttpServerService httpServerService;
+
+    private MessagingWebInterface webInterface;
+
 
     @Inject
     public MessagingServer(String[] runtimeArgs, ServiceConfiguration serviceConfiguration,
@@ -41,6 +45,9 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
 
         this.httpServerService.startServer("0.0.0.0", 8081);
 
+        this.webInterface = new MessagingWebInterface(this.httpServerService.getRoutingService());
+        this.webInterface.initialiseRoutes();
+
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/",
                 (req, res) -> {
                     final Map<String, Object> model = Maps.newHashMap();
@@ -49,12 +56,6 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
 
                     res.setContentType("text/html");
                     res.renderView("index", model);
-                });
-
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/users/:id/:action",
-                (req, res) -> {
-                    res.setContentType("text/html");
-                    res.send("<h2>name: " + req.getUrlParameter("id") + ", action: " + req.getUrlParameter("action") + "</h2>");
                 });
     }
 
