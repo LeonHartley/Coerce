@@ -44,10 +44,10 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
                     res.send("<h2>It works!</h2>");
                 });
 
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/nah",
+        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/users/:id/:action",
                 (req, res) -> {
                     res.setContentType("text/html");
-                    res.send("<h2>It doesn't work!</h2>");
+                    res.send("<h2>name: " + req.getUrlParameter("id") + ", action: " + req.getUrlParameter("action") + "</h2>");
                 });
     }
 

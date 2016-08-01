@@ -4,7 +4,7 @@ import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
 import io.coerce.networking.http.sessions.HttpSession;
-import sun.net.NetworkClient;
+import org.bigtesting.routd.Route;
 
 import java.util.Map;
 
@@ -19,6 +19,8 @@ public class DefaultHttpRequest implements HttpRequest {
 
     private NetworkChannel networkChannel;
 
+    private Route route;
+
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion, Map<String, String> headers, byte[] requestData) {
 
         this.type = type;
@@ -29,7 +31,7 @@ public class DefaultHttpRequest implements HttpRequest {
     }
 
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion, Map<String, String> headers) {
-        this( type, location, httpVersion, headers, null);
+        this(type, location, httpVersion, headers, null);
     }
 
     @Override
@@ -65,6 +67,15 @@ public class DefaultHttpRequest implements HttpRequest {
     @Override
     public byte[] getData() {
         return requestData;
+    }
+
+    @Override
+    public String getUrlParameter(final String key) {
+        return this.route.getNamedParameter(key, this.getLocation());
+    }
+
+    public void setRoute(final Route route) {
+        this.route = route;
     }
 
     public NetworkChannel getNetworkChannel() {

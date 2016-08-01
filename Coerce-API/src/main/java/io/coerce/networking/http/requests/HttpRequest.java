@@ -11,4 +11,6 @@ public interface HttpRequest extends HttpPayload {
     String getLocation();
 
     String getHttpVersion();
+
+    String getUrlParameter(final String key);
 }

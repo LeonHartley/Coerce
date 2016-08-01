@@ -26,5 +26,11 @@
             <artifactId>Coerce-Commons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.bigtesting</groupId>
+            <artifactId>routd</artifactId>
+            <version>1.0.5</version>
+        </dependency>
     </dependencies>
 </project>
