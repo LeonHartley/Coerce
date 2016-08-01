@@ -3,6 +3,7 @@ package io.coerce.http.server;
 import io.coerce.http.codec.HttpPayloadDecoder;
 import io.coerce.http.codec.HttpPayloadEncoder;
 import io.coerce.http.server.requests.HttpRequestQueue;
+import io.coerce.http.types.DefaultHttpRequest;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.channels.NetworkChannelHandler;
 import io.coerce.networking.codec.ObjectDecoder;
@@ -41,6 +42,10 @@ public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
 
     @Override
     public void onMessageReceived(HttpPayload message, NetworkChannel networkChannel) {
+        if(message instanceof DefaultHttpRequest) {
+            ((DefaultHttpRequest) message).setNetworkChannel(networkChannel);
+        }
+
         this.requestQueue.enqueue((HttpRequest) message);
     }
 

@@ -1,8 +1,10 @@
 package io.coerce.http.types;
 
+import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
 import io.coerce.networking.http.sessions.HttpSession;
+import sun.net.NetworkClient;
 
 import java.util.Map;
 
@@ -15,7 +17,10 @@ public class DefaultHttpRequest implements HttpRequest {
     private final Map<String, String> headers;
     private final byte[] requestData;
 
+    private NetworkChannel networkChannel;
+
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion, Map<String, String> headers, byte[] requestData) {
+
         this.type = type;
         this.location = location;
         this.httpVersion = httpVersion;
@@ -24,7 +29,7 @@ public class DefaultHttpRequest implements HttpRequest {
     }
 
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion, Map<String, String> headers) {
-        this(type, location, httpVersion, headers, null);
+        this( type, location, httpVersion, headers, null);
     }
 
     @Override
@@ -60,5 +65,13 @@ public class DefaultHttpRequest implements HttpRequest {
     @Override
     public byte[] getData() {
         return requestData;
+    }
+
+    public NetworkChannel getNetworkChannel() {
+        return networkChannel;
+    }
+
+    public void setNetworkChannel(final NetworkChannel networkChannel) {
+        this.networkChannel = networkChannel;
     }
 }

@@ -39,11 +39,15 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         this.httpServerService.startServer("0.0.0.0", 8081);
 
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/",
-                (req, res) -> System.out.println(req.getLocation()));
-
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/jack",
                 (req, res) -> {
-                    System.out.println("We got a GET request for /jack");
+                    res.setContentType("text/html");
+                    res.send("<h2>It works!</h2>");
+                });
+
+        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/nah",
+                (req, res) -> {
+                    res.setContentType("text/html");
+                    res.send("<h2>It doesn't work!</h2>");
                 });
     }
 

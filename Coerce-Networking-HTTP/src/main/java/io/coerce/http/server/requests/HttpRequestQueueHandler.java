@@ -1,5 +1,7 @@
 package io.coerce.http.server.requests;
 
+import io.coerce.http.types.DefaultHttpRequest;
+import io.coerce.http.types.DefaultHttpResponse;
 import io.coerce.networking.http.requests.HttpRequest;
 
 public class HttpRequestQueueHandler extends Thread {
@@ -18,13 +20,13 @@ public class HttpRequestQueueHandler extends Thread {
         while (this.running) {
             try {
                 // Poll the queue for entries and handle them.
-                final HttpRequest httpRequest = this.requestQueue.getQueue().poll();
+                final DefaultHttpRequest httpRequest = (DefaultHttpRequest) this.requestQueue.getQueue().poll();
 
                 if(httpRequest == null) {
                     continue;
                 }
 
-                this.requestQueue.getRoutingService().processRoute(httpRequest, null);
+                this.requestQueue.getRoutingService().processRoute(httpRequest, new DefaultHttpResponse(httpRequest.getNetworkChannel()));
                 //System.out.println("[" + this.getName() + "] " + httpRequest.getLocation());
             } catch(Exception e) {
                 e.printStackTrace();

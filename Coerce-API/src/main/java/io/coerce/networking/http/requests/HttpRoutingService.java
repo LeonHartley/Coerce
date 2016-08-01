@@ -8,4 +8,6 @@ public interface HttpRoutingService {
     void addRoute(HttpRequestType type, String pathPattern, BiConsumer<HttpRequest, HttpResponse> route);
 
     void processRoute(HttpRequest request, HttpResponse response);
+
+    //void setErrorRoute(HttpErrorType type, BiConsumer<HttpRequest, HttpResponse> route);
 }

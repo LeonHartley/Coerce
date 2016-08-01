@@ -19,6 +19,8 @@ public class HttpPayloadEncoder implements ObjectEncoder<HttpPayload> {
             httpResponseBuilder.append(header.getKey() + ":" + header.getValue() + '\n');
         }
 
+        httpResponseBuilder.append("\n");
+
         out.writeBytes(Bytes.concat(
                 httpResponseBuilder.toString().getBytes(),
                 object.getData()));
