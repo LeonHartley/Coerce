@@ -16,7 +16,7 @@ public class HttpPayloadEncoder implements ObjectEncoder<HttpPayload> {
         httpResponseBuilder.append(object.getHeader() + "\r\n");
 
         for (Map.Entry<String, String> header : object.getHeaders().entrySet()) {
-            httpResponseBuilder.append(header.getKey() + ":" + header.getValue() + "\r\n");
+            httpResponseBuilder.append(header.getKey() + ": " + header.getValue() + "\r\n");
         }
 
         httpResponseBuilder.append("\r\n");

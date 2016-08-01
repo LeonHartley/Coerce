@@ -1,5 +1,6 @@
 package io.coerce.services.messaging.server;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingService;
@@ -9,6 +10,8 @@ import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
+
+import java.util.Map;
 
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
     private final NetworkingService networkingService;
@@ -40,8 +43,12 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
 
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/",
                 (req, res) -> {
+                    final Map<String, Object> model = Maps.newHashMap();
+
+                    model.put("hi", "hello!!");
+
                     res.setContentType("text/html");
-                    res.send("<h2>It works!</h2>");
+                    res.renderView("index", model);
                 });
 
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/users/:id/:action",

@@ -1,9 +1,11 @@
 package io.coerce.http.types;
 
+import io.coerce.http.server.responses.ThymeleafViewParser;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.HttpPayload;
 import io.coerce.networking.http.responses.HttpResponse;
 import io.coerce.networking.http.responses.HttpResponseCode;
+import io.coerce.networking.http.responses.views.ViewParser;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +19,10 @@ public class DefaultHttpResponse implements HttpResponse {
     private String contentType = "text/plain";
 
     private final Map<String, String> headers;
+    private final ViewParser viewParser;
 
-    public DefaultHttpResponse(NetworkChannel networkChannel) {
+    public DefaultHttpResponse(ViewParser viewParser, NetworkChannel networkChannel) {
+        this.viewParser = viewParser;
         this.networkChannel = networkChannel;
         this.headers = new ConcurrentHashMap<>();
     }
@@ -55,6 +59,7 @@ public class DefaultHttpResponse implements HttpResponse {
     @Override
     public void renderView(String view, Map<String, Object> model) {
         // build the view along with the model then we build the payload then send it.
+        this.send(this.viewParser.render(view, model));
     }
 
     @Override

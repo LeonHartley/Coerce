@@ -10,16 +10,21 @@ import io.coerce.networking.codec.ObjectDecoder;
 import io.coerce.networking.codec.ObjectEncoder;
 import io.coerce.networking.http.HttpPayload;
 import io.coerce.networking.http.requests.HttpRequest;
+import io.coerce.networking.http.responses.views.ViewParser;
 
 public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
 
     private final ObjectEncoder<HttpPayload> encoder;
     private final ObjectDecoder<HttpPayload> decoder;
 
+    private final ViewParser viewParser;
+
     private final HttpRequestQueue requestQueue;
 
-    public HttpChannelHandler(HttpRequestQueue queue) {
+    public HttpChannelHandler(ViewParser viewParser, HttpRequestQueue queue) {
         this.requestQueue = queue;
+
+        this.viewParser = viewParser;
 
         this.decoder = new HttpPayloadDecoder();
         this.encoder = new HttpPayloadEncoder();
@@ -44,6 +49,7 @@ public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
     public void onMessageReceived(HttpPayload message, NetworkChannel networkChannel) {
         if(message instanceof DefaultHttpRequest) {
             ((DefaultHttpRequest) message).setNetworkChannel(networkChannel);
+            ((DefaultHttpRequest) message).setViewParser(viewParser);
         }
 
         // TODO: request logging

@@ -33,7 +33,9 @@ public class HttpRequestQueue {
     }
 
     public void enqueue(final HttpRequest request) {
-        this.requestQueue.add(request);
+        if(!this.requestQueue.offer(request)) {
+            // TODO: backlog requests.
+        }
     }
 
     public BlockingQueue<HttpRequest> getQueue() {

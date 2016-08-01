@@ -2,7 +2,6 @@ package io.coerce.http.server.requests;
 
 import io.coerce.http.types.DefaultHttpRequest;
 import io.coerce.http.types.DefaultHttpResponse;
-import io.coerce.networking.http.requests.HttpRequest;
 
 public class HttpRequestQueueHandler extends Thread {
 
@@ -26,8 +25,9 @@ public class HttpRequestQueueHandler extends Thread {
                     continue;
                 }
 
-                this.requestQueue.getRoutingService().processRoute(httpRequest, new DefaultHttpResponse(httpRequest.getNetworkChannel()));
-                //System.out.println("[" + this.getName() + "] " + httpRequest.getLocation());
+                this.requestQueue.getRoutingService().processRoute(httpRequest, new DefaultHttpResponse(
+                        httpRequest.getViewParser(),
+                        httpRequest.getNetworkChannel()));
             } catch(Exception e) {
                 e.printStackTrace();
             }

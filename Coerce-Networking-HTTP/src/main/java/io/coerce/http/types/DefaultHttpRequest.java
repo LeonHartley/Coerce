@@ -3,6 +3,7 @@ package io.coerce.http.types;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
+import io.coerce.networking.http.responses.views.ViewParser;
 import io.coerce.networking.http.sessions.HttpSession;
 import org.bigtesting.routd.Route;
 
@@ -18,6 +19,7 @@ public class DefaultHttpRequest implements HttpRequest {
     private final byte[] requestData;
 
     private NetworkChannel networkChannel;
+    private ViewParser viewParser;
 
     private Route route;
 
@@ -84,5 +86,13 @@ public class DefaultHttpRequest implements HttpRequest {
 
     public void setNetworkChannel(final NetworkChannel networkChannel) {
         this.networkChannel = networkChannel;
+    }
+
+    public ViewParser getViewParser() {
+        return this.viewParser;
+    }
+
+    public void setViewParser(final ViewParser viewParser) {
+        this.viewParser = viewParser;
     }
 }

@@ -1,6 +1,7 @@
 package io.coerce.networking.http;
 
 import io.coerce.networking.http.requests.HttpRoutingService;
+import io.coerce.networking.http.responses.views.ViewParser;
 import io.coerce.networking.http.sessions.HttpSessionService;
 
 public interface HttpServerService {
@@ -12,4 +13,7 @@ public interface HttpServerService {
 
     void setSessionService(final HttpSessionService sessionService);
 
+    void setViewParser(final ViewParser viewParser);
+
+    ViewParser getViewParser();
 }
