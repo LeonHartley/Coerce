@@ -55,7 +55,7 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
                     model.put("hi", "hello!!");
 
                     res.setContentType("text/html");
-                    res.renderView("index", model);
+                    res.renderView("index.messaging", model);
                 });
     }
 

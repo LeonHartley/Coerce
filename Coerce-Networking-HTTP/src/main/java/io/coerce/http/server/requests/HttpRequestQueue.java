@@ -1,7 +1,6 @@
 package io.coerce.http.server.requests;
 
 import com.google.inject.Inject;
-import io.coerce.commons.config.Configuration;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRoutingService;
 
