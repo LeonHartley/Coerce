@@ -1,5 +1,6 @@
 package io.coerce.http.server;
 
+import io.coerce.http.CoreHttpServerService;
 import io.coerce.http.codec.HttpPayloadDecoder;
 import io.coerce.http.codec.HttpPayloadEncoder;
 import io.coerce.http.server.requests.HttpRequestQueue;
@@ -9,22 +10,18 @@ import io.coerce.networking.channels.NetworkChannelHandler;
 import io.coerce.networking.codec.ObjectDecoder;
 import io.coerce.networking.codec.ObjectEncoder;
 import io.coerce.networking.http.HttpPayload;
+import io.coerce.networking.http.cookies.Cookie;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.responses.views.ViewParser;
 
 public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
-
     private final ObjectEncoder<HttpPayload> encoder;
     private final ObjectDecoder<HttpPayload> decoder;
 
-    private final ViewParser viewParser;
+    private final CoreHttpServerService serverService;
 
-    private final HttpRequestQueue requestQueue;
-
-    public HttpChannelHandler(ViewParser viewParser, HttpRequestQueue queue) {
-        this.requestQueue = queue;
-
-        this.viewParser = viewParser;
+    public HttpChannelHandler(CoreHttpServerService serverService) {
+        this.serverService = serverService;
 
         this.decoder = new HttpPayloadDecoder();
         this.encoder = new HttpPayloadEncoder();
@@ -48,12 +45,14 @@ public class HttpChannelHandler implements NetworkChannelHandler<HttpPayload> {
     @Override
     public void onMessageReceived(HttpPayload message, NetworkChannel networkChannel) {
         if(message instanceof DefaultHttpRequest) {
-            ((DefaultHttpRequest) message).setNetworkChannel(networkChannel);
-            ((DefaultHttpRequest) message).setViewParser(viewParser);
+            final DefaultHttpRequest httpRequest = (DefaultHttpRequest) message;
+
+            httpRequest.setNetworkChannel(networkChannel);
+            httpRequest.setViewParser(this.serverService.getViewParser());
         }
 
         // TODO: request logging
-        this.requestQueue.enqueue((HttpRequest) message);
+        this.serverService.getRequestQueue().enqueue((HttpRequest) message);
     }
 
     @Override

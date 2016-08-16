@@ -38,7 +38,7 @@ public class NettyNetworkingService implements NetworkingService {
     }
 
     @Override
-    public void configure(NetworkChannelHandler channelHandler) {
+    public void initialise(NetworkChannelHandler channelHandler) {
         this.channelHandler = channelHandler;
 
         final boolean useEpoll = this.configuration.getBoolean("epoll") && Epoll.isAvailable();

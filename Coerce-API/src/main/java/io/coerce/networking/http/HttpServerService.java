@@ -11,6 +11,8 @@ public interface HttpServerService {
 
     void setRoutingService(final HttpRoutingService routingService);
 
+    HttpSessionService getSessionService();
+
     void setSessionService(final HttpSessionService sessionService);
 
     void setViewParser(final ViewParser viewParser);

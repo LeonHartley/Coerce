@@ -38,7 +38,7 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
 
     @Override
     public void onServiceInitialised() {
-        this.networkingService.configure(this.channelHandler);
+        this.networkingService.initialise(this.channelHandler);
 
         this.networkingService.startService(this.getConfiguration().getHostName(),
                 this.getConfiguration().getPort());

@@ -1,6 +1,7 @@
 package io.coerce.http.types;
 
 import io.coerce.networking.channels.NetworkChannel;
+import io.coerce.networking.http.cookies.Cookie;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
 import io.coerce.networking.http.responses.views.ViewParser;
@@ -16,6 +17,7 @@ public class DefaultHttpRequest implements HttpRequest {
     private final String location;
 
     private final Map<String, String> headers;
+    private final Map<String, Cookie> cookies;
     private final byte[] requestData;
 
     private NetworkChannel networkChannel;
@@ -23,17 +25,21 @@ public class DefaultHttpRequest implements HttpRequest {
 
     private Route route;
 
-    public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion, Map<String, String> headers, byte[] requestData) {
+    private HttpSession session;
 
+    public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion,
+                              Map<String, String> headers, Map<String, Cookie> cookies, byte[] requestData) {
         this.type = type;
         this.location = location;
         this.httpVersion = httpVersion;
         this.headers = headers;
         this.requestData = requestData;
+        this.cookies = cookies;
     }
 
-    public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion, Map<String, String> headers) {
-        this(type, location, httpVersion, headers, null);
+    public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion,
+                              Map<String, String> headers, Map<String, Cookie> cookies) {
+        this(type, location, httpVersion, headers, cookies, null);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class DefaultHttpRequest implements HttpRequest {
 
     @Override
     public HttpSession getSession() {
-        return null;
+        return this.session;
     }
 
     @Override
@@ -76,6 +82,11 @@ public class DefaultHttpRequest implements HttpRequest {
         return this.route.getNamedParameter(key, this.getLocation());
     }
 
+    @Override
+    public Map<String, Cookie> getCookies() {
+        return this.cookies;
+    }
+
     public void setRoute(final Route route) {
         this.route = route;
     }
@@ -94,5 +105,9 @@ public class DefaultHttpRequest implements HttpRequest {
 
     public void setViewParser(final ViewParser viewParser) {
         this.viewParser = viewParser;
+    }
+
+    public void setSession(final HttpSession httpSession) {
+        this.session = httpSession;
     }
 }

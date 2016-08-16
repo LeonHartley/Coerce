@@ -31,7 +31,7 @@ public class NioNetworkingService implements NetworkingService {
     }
 
     @Override
-    public void configure(NetworkChannelHandler channelHandler) {
+    public void initialise(NetworkChannelHandler channelHandler) {
 
     }
 

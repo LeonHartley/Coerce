@@ -2,6 +2,7 @@ package io.coerce.http.server.requests;
 
 import io.coerce.http.types.DefaultHttpRequest;
 import io.coerce.http.types.DefaultHttpResponse;
+import io.coerce.networking.http.cookies.Cookie;
 
 public class HttpRequestQueueHandler extends Thread {
 
@@ -23,6 +24,12 @@ public class HttpRequestQueueHandler extends Thread {
 
                 if(httpRequest == null) {
                     continue;
+                }
+
+                final Cookie sessionCookie = httpRequest.getCookies().get("COERCE_SESSION");
+
+                if(sessionCookie == null) {
+                    // create a session, assign it via this cookie
                 }
 
                 this.requestQueue.getRoutingService().processRoute(httpRequest, new DefaultHttpResponse(
