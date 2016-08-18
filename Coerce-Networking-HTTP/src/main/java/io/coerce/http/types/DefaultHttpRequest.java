@@ -18,6 +18,8 @@ public class DefaultHttpRequest implements HttpRequest {
 
     private final Map<String, String> headers;
     private final Map<String, Cookie> cookies;
+    private final Map<String, String> queryParameters;
+
     private final byte[] requestData;
 
     private NetworkChannel networkChannel;
@@ -28,18 +30,20 @@ public class DefaultHttpRequest implements HttpRequest {
     private HttpSession session;
 
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion,
-                              Map<String, String> headers, Map<String, Cookie> cookies, byte[] requestData) {
+                              Map<String, String> headers, Map<String, Cookie> cookies,
+                              Map<String, String> queryParameters, byte[] requestData) {
         this.type = type;
         this.location = location;
         this.httpVersion = httpVersion;
         this.headers = headers;
-        this.requestData = requestData;
         this.cookies = cookies;
+        this.queryParameters = queryParameters;
+        this.requestData = requestData;
     }
 
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion,
-                              Map<String, String> headers, Map<String, Cookie> cookies) {
-        this(type, location, httpVersion, headers, cookies, null);
+                              Map<String, String> headers, Map<String, Cookie> cookies, Map<String, String> queryParameters) {
+        this(type, location, httpVersion, headers, cookies, queryParameters, null);
     }
 
     @Override
@@ -80,6 +84,16 @@ public class DefaultHttpRequest implements HttpRequest {
     @Override
     public String getUrlParameter(final String key) {
         return this.route.getNamedParameter(key, this.getLocation());
+    }
+
+    @Override
+    public String getQueryParameter(String key) {
+        return this.queryParameters.get(key);
+    }
+
+    @Override
+    public boolean hasQueryParameter(String key) {
+        return this.queryParameters.containsKey(key);
     }
 
     @Override

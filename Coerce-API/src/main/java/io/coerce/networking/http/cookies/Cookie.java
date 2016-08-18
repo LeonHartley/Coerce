@@ -29,7 +29,7 @@ public class Cookie {
     }
 
     public String getHeader() {
-        return "Set-Cookie: " + this.key + "=" + this.value + "; " +
+        return this.key + "=" + this.value + "; " +
                 (this.expiry != null ? "Expires=" + this.expiry : "");
     }
 }

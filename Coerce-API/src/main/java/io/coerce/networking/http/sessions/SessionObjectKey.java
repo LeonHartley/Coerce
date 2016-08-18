@@ -10,4 +10,8 @@ public class SessionObjectKey<T> {
     public String getName() {
         return this.name;
     }
+
+    public static SessionObjectKey forName(final String name) {
+        return new SessionObjectKey(name);
+    }
 }

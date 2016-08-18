@@ -5,6 +5,7 @@ import io.coerce.http.server.HttpChannelHandler;
 import io.coerce.http.server.requests.HttpRequestQueue;
 import io.coerce.http.server.requests.HttpRequestService;
 import io.coerce.http.server.responses.ThymeleafViewParser;
+import io.coerce.http.server.sessions.DefaultSessionService;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.channels.NetworkChannelHandler;
 import io.coerce.networking.http.HttpServerService;
@@ -28,8 +29,9 @@ public class CoreHttpServerService implements HttpServerService {
         this.networkingService = networkingService;
         this.routingService = requestService;
 
+        this.sessionService = new DefaultSessionService();
         this.viewParser = new ThymeleafViewParser();
-        this.requestQueue = new HttpRequestQueue(this.getRoutingService(), 1000);
+        this.requestQueue = new HttpRequestQueue(this, 1000);
     }
 
     @Override

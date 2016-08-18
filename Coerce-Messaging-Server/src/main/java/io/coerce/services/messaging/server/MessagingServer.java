@@ -12,6 +12,9 @@ import io.coerce.services.messaging.server.configuration.MessagingServerConfigur
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
 import io.coerce.services.messaging.server.web.MessagingWebInterface;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
@@ -36,6 +39,8 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         this.httpServerService = httpServer;
     }
 
+    private static byte[] data;
+
     @Override
     public void onServiceInitialised() {
         this.networkingService.initialise(this.channelHandler);
@@ -57,6 +62,20 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
                     res.setContentType("text/html");
                     res.renderView("index.messaging", model);
                 });
+
+
+        try {
+            File imgPath = new File("configuration/telme.png");
+            data = Files.readAllBytes(imgPath.toPath());
+
+            this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/images/telme.png", (req, res) -> {
+                res.setContentType("image/png");
+
+                res.send(data);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

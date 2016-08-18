@@ -7,8 +7,10 @@ import io.coerce.networking.codec.ObjectDecoder;
 import io.coerce.networking.http.HttpPayload;
 import io.coerce.networking.http.cookies.Cookie;
 import io.coerce.networking.http.requests.HttpRequestType;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.map.ser.std.StdArraySerializers;
 
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -27,11 +29,32 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
         final String[] httpRequestTypeParts = requestLines[0].split(" ");
 
         final HttpRequestType type = HttpRequestType.valueOf(httpRequestTypeParts[0]);
-        final String location = httpRequestTypeParts[1];
+
+        final String[] locationString = httpRequestTypeParts[1].split("\\?");
+
+        final String location = locationString[0];
+        final String[] splitParams = locationString.length > 1 ? locationString[1].split("\\&") : null;
+
         final String httpVersion = httpRequestTypeParts[2];
 
         final Map<String, String> headers = new HashMap<>();
         final Map<String, Cookie> cookies = new HashMap<>();
+        final Map<String, String> queryParameters = new HashMap<>();
+
+        if(splitParams != null) {
+            for (String splitParam : splitParams) {
+                try {
+                    if (splitParam.contains("=")) {
+                        final String[] paramData = splitParam.split("=");
+                        queryParameters.put(paramData[0], paramData.length > 1 ? URLDecoder.decode(paramData[1], "UTF-8") : "");
+                    } else {
+                        queryParameters.put(splitParam, "");
+                    }
+                } catch (Exception e) {
+                    log.error("Error while parsing query parameters of request {}", StringUtils.join(locationString, "?"), e);
+                }
+            }
+        }
 
         for (int i = 1; i < requestLines.length; i++) {
             try {
@@ -57,12 +80,7 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
                         final String[] cookiePayload = cookieEntry.split("=");
 
                         final Cookie cookie = new Cookie(cookiePayload[0], URLDecoder.decode(cookiePayload[1], "UTF-8"));
-
-                        if (cookies.containsKey(cookie.getKey())) {
-                            cookies.replace(cookie.getKey(), cookie);
-                        } else {
-                            cookies.put(cookie.getKey(), cookie);
-                        }
+                        cookies.put(cookie.getKey(), cookie);
                     }
                 } else {
                     headers.put(header[0].trim(), header[1].trim());
@@ -72,6 +90,6 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
             }
         }
 
-        return new DefaultHttpRequest(type, location, httpVersion, headers, cookies);
+        return new DefaultHttpRequest(type, location, httpVersion, headers, cookies, queryParameters);
     }
 }

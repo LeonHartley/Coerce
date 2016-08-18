@@ -17,5 +17,9 @@ public interface HttpRequest extends HttpPayload {
 
     String getUrlParameter(final String key);
 
+    String getQueryParameter(final String key);
+
+    boolean hasQueryParameter(final String key);
+
     Map<String, Cookie> getCookies();
 }

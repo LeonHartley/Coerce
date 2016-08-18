@@ -2,14 +2,19 @@ package io.coerce.http.types;
 
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.HttpPayload;
+import io.coerce.networking.http.cookies.Cookie;
 import io.coerce.networking.http.responses.HttpResponse;
 import io.coerce.networking.http.responses.HttpResponseCode;
 import io.coerce.networking.http.responses.views.ViewParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultHttpResponse implements HttpResponse {
+    private static final Logger log = LogManager.getLogger(DefaultHttpResponse.class);
     private static final String HTTP_VERSION = "HTTP/1.1";
 
     private final NetworkChannel networkChannel;
@@ -18,12 +23,15 @@ public class DefaultHttpResponse implements HttpResponse {
     private String contentType = "text/plain";
 
     private final Map<String, String> headers;
+    private final Map<String, Cookie> cookies;
     private final ViewParser viewParser;
 
     public DefaultHttpResponse(ViewParser viewParser, NetworkChannel networkChannel) {
         this.viewParser = viewParser;
         this.networkChannel = networkChannel;
+
         this.headers = new ConcurrentHashMap<>();
+        this.cookies = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -37,22 +45,39 @@ public class DefaultHttpResponse implements HttpResponse {
     }
 
     @Override
-    public void send(String string) {
-        final byte[] data = string.getBytes();
-
-        this.headers.put("Content-Length", "" + data.length);
+    public void send(final byte[] bytes) {
+        this.headers.put("Content-Length", "" + bytes.length);
         this.headers.put("Content-Type", this.getContentType());
 
         if (this.networkChannel == null) {
             return;
         }
 
+        if(!this.cookies.isEmpty()) {
+            try {
+            String setCookieHeader = "";
+
+            for(Cookie cookie : this.cookies.values()) {
+                setCookieHeader += cookie.getHeader();
+            }
+
+            this.headers.put("Set-Cookie", setCookieHeader);
+            } catch (Exception e) {
+                log.error("Error while encoding cookie data", e);
+            }
+        }
+
         // build the http payload & send it
         this.networkChannel.writeAndClose(new ResponsePayload(
                 HTTP_VERSION + " " + this.responseType.getResponseCode() + " " + this.responseType.getResponse(),
                 this.headers,
-                string.getBytes()
+                bytes
         ));
+    }
+
+    @Override
+    public void send(final String string) {
+        this.send(string.getBytes());
     }
 
     @Override
@@ -69,6 +94,26 @@ public class DefaultHttpResponse implements HttpResponse {
             // TODO: Only send the exception information when the server is running in development mode.
             this.send("Internal server error\n\n" + e.getMessage());
         }
+    }
+
+    @Override
+    public void setHeader(String key, String value) {
+        this.headers.put(key, value);
+    }
+
+    @Override
+    public String getHeader(String key) {
+        return this.headers.get(key);
+    }
+
+    @Override
+    public void setCookie(Cookie cookie) {
+        this.cookies.put(cookie.getKey(), cookie);
+    }
+
+    @Override
+    public boolean hasCookie(String key) {
+        return this.cookies.containsKey(key);
     }
 
     @Override
