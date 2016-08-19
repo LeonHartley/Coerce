@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>Coerce</groupId>
-        <artifactId>Messaging</artifactId>
+        <artifactId>Core</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
