@@ -43,7 +43,13 @@ public class HttpRequestQueueHandler extends Thread {
                     httpResponse.setCookie(new Cookie("COERCE_SESSION", sessionId, "2038-01-19 04:14:07"));
                     httpRequest.setSession(this.requestQueue.getSessionService().createSession(sessionId));
                 } else {
-                    httpRequest.setSession(this.requestQueue.getSessionService().getSessionById(sessionCookie.getValue()));
+                    final HttpSession session = this.requestQueue.getSessionService().getSessionById(sessionCookie.getValue());
+
+                    if(session == null) {
+                        httpRequest.setSession(this.requestQueue.getSessionService().createSession(sessionCookie.getValue()));
+                    } else {
+                        httpRequest.setSession(session);
+                    }
                 }
 
                 this.requestQueue.getRoutingService().processRoute(httpRequest, httpResponse);

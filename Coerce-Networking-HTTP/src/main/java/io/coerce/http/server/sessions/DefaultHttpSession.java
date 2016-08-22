@@ -16,7 +16,7 @@ public class DefaultHttpSession implements HttpSession {
     @Override
     public <T> T getObject(SessionObjectKey<T> key) {
         if(this.sessionObjects.containsKey(key.getName())) {
-            return (T) this.sessionObjects.get(key);
+            return (T) this.sessionObjects.get(key.getName());
         }
 
         return null;

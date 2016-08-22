@@ -5,7 +5,10 @@ import com.google.inject.Inject;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.http.HttpServerService;
+import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
+import io.coerce.networking.http.responses.HttpResponse;
+import io.coerce.networking.http.sessions.SessionObjectKey;
 import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
@@ -16,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
     private final NetworkingService networkingService;
@@ -53,16 +57,22 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         this.webInterface = new MessagingWebInterface(this.httpServerService.getRoutingService());
         this.webInterface.initialiseRoutes();
 
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/",
-                (req, res) -> {
-                    final Map<String, Object> model = Maps.newHashMap();
+        final SessionObjectKey<String> username = new SessionObjectKey<>("Username");
 
-                    model.put("hi", "hello!!");
+        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/session/:username", (request, httpResponse) -> {
+                request.getSession().setObject(username, request.getUrlParameter("username"));
 
-                    res.setContentType("text/html");
-                    res.renderView("index.messaging", model);
-                });
+                httpResponse.send("session data set successfully");
+        });
 
+        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/", (req, res) -> {
+            if(req.getSession().getObject(username) == null) {
+                res.send("no username set");
+                return;
+            }
+
+            res.send(req.getSession().getObject(username));
+        });
 
         try {
             File imgPath = new File("configuration/telme.png");

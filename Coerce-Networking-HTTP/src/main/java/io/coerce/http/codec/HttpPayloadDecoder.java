@@ -79,7 +79,7 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
 
                         final String[] cookiePayload = cookieEntry.split("=");
 
-                        final Cookie cookie = new Cookie(cookiePayload[0], URLDecoder.decode(cookiePayload[1], "UTF-8"));
+                        final Cookie cookie = new Cookie(cookiePayload[0].trim(), URLDecoder.decode(cookiePayload[1], "UTF-8"));
                         cookies.put(cookie.getKey(), cookie);
                     }
                 } else {
