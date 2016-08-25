@@ -1,5 +1,7 @@
 package io.coerce.http.types;
 
+import com.google.gson.JsonObject;
+import io.coerce.commons.json.JsonUtil;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.HttpPayload;
 import io.coerce.networking.http.cookies.Cookie;
@@ -151,6 +153,11 @@ public class DefaultHttpResponse implements HttpResponse {
         @Override
         public byte[] getData() {
             return this.data;
+        }
+
+        @Override
+        public JsonObject getDataAsJson() {
+            return null;
         }
     }
 }

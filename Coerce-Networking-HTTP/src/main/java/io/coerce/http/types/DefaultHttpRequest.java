@@ -1,5 +1,7 @@
 package io.coerce.http.types;
 
+import com.google.gson.JsonObject;
+import io.coerce.commons.json.JsonUtil;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.http.cookies.Cookie;
 import io.coerce.networking.http.requests.HttpRequest;
@@ -22,6 +24,8 @@ public class DefaultHttpRequest implements HttpRequest {
 
     private final byte[] requestData;
 
+    private JsonObject requestDataJson;
+
     private NetworkChannel networkChannel;
     private ViewParser viewParser;
 
@@ -42,7 +46,8 @@ public class DefaultHttpRequest implements HttpRequest {
     }
 
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion,
-                              Map<String, String> headers, Map<String, Cookie> cookies, Map<String, String> queryParameters) {
+                              Map<String, String> headers, Map<String, Cookie> cookies,
+                              Map<String, String> queryParameters) {
         this(type, location, httpVersion, headers, cookies, queryParameters, null);
     }
 
@@ -79,6 +84,16 @@ public class DefaultHttpRequest implements HttpRequest {
     @Override
     public byte[] getData() {
         return requestData;
+    }
+
+    @Override
+    public JsonObject getDataAsJson() {
+        if(this.requestDataJson == null) {
+            this.requestDataJson = JsonUtil.getGsonInstance().fromJson(
+                    new String(this.requestData), JsonObject.class);
+        }
+
+        return this.requestDataJson;
     }
 
     @Override

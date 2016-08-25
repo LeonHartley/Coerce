@@ -1,25 +1,16 @@
 package io.coerce.services.messaging.server;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.http.HttpServerService;
-import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
-import io.coerce.networking.http.responses.HttpResponse;
 import io.coerce.networking.http.sessions.SessionObjectKey;
 import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
 import io.coerce.services.messaging.server.web.MessagingWebInterface;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
     private final NetworkingService networkingService;
@@ -29,7 +20,6 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
     private final HttpServerService httpServerService;
 
     private MessagingWebInterface webInterface;
-
 
     @Inject
     public MessagingServer(String[] runtimeArgs, ServiceConfiguration serviceConfiguration,
@@ -42,8 +32,6 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         this.channelHandler = channelHandler;
         this.httpServerService = httpServer;
     }
-
-    private static byte[] data;
 
     @Override
     public void onServiceInitialised() {
@@ -60,32 +48,19 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         final SessionObjectKey<String> username = new SessionObjectKey<>("Username");
 
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/session/:username", (request, httpResponse) -> {
-                request.getSession().setObject(username, request.getUrlParameter("username"));
+            request.getSession().setObject(username, request.getUrlParameter("username"));
 
-                httpResponse.send("session data set successfully");
+            httpResponse.send("session data set successfully");
         });
 
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/", (req, res) -> {
-            if(req.getSession().getObject(username) == null) {
-                res.send("no username set");
+        this.httpServerService.getRoutingService().addRoute(HttpRequestType.POST, "/", (req, res) -> {
+            if (req.getSession().getObject(username) == null) {
+                res.send(req.getDataAsJson().get("token").getAsString());
                 return;
             }
 
             res.send(req.getSession().getObject(username));
         });
-
-        try {
-            File imgPath = new File("configuration/telme.png");
-            data = Files.readAllBytes(imgPath.toPath());
-
-            this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/images/telme.png", (req, res) -> {
-                res.setContentType("image/png");
-
-                res.send(data);
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

@@ -10,7 +10,6 @@ import io.coerce.networking.http.requests.HttpRequestType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jackson.map.ser.std.StdArraySerializers;
 
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -41,7 +40,7 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
         final Map<String, Cookie> cookies = new HashMap<>();
         final Map<String, String> queryParameters = new HashMap<>();
 
-        if(splitParams != null) {
+        if (splitParams != null) {
             for (String splitParam : splitParams) {
                 try {
                     if (splitParam.contains("=")) {
@@ -56,8 +55,15 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
             }
         }
 
+        byte[] data = null;
+        boolean nextLineIsData = false;
+
         for (int i = 1; i < requestLines.length; i++) {
             try {
+                if (i == (requestLines.length - 1)) {
+                    data = requestLines[i].getBytes();
+                }
+
                 final String[] header = requestLines[i].split(":");
 
                 if (header[0].equals("Cookie")) {
@@ -83,13 +89,15 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
                         cookies.put(cookie.getKey(), cookie);
                     }
                 } else {
-                    headers.put(header[0].trim(), header[1].trim());
+                    if (!header[0].isEmpty()) {
+                        headers.put(header[0].trim(), header[1].trim());
+                    }
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 log.error("Error while parsing HTTP request line {}", requestLines[i], e);
             }
         }
 
-        return new DefaultHttpRequest(type, location, httpVersion, headers, cookies, queryParameters);
+        return new DefaultHttpRequest(type, location, httpVersion, headers, cookies, queryParameters, data);
     }
 }

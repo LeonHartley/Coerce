@@ -1,5 +1,7 @@
 package io.coerce.networking.http;
 
+import com.google.gson.JsonObject;
+
 import java.util.Map;
 
 public interface HttpPayload {
@@ -8,4 +10,6 @@ public interface HttpPayload {
     Map<String, String> getHeaders();
 
     byte[] getData();
+
+    JsonObject getDataAsJson();
 }
