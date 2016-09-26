@@ -62,6 +62,7 @@ public class HttpPayloadDecoder implements ObjectDecoder<HttpPayload> {
             try {
                 if (i == (requestLines.length - 1)) {
                     data = requestLines[i].getBytes();
+                    break;
                 }
 
                 final String[] header = requestLines[i].split(":");

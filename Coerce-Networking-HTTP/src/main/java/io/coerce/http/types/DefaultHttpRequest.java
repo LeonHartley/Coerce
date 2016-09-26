@@ -10,6 +10,7 @@ import io.coerce.networking.http.responses.views.ViewParser;
 import io.coerce.networking.http.sessions.HttpSession;
 import org.bigtesting.routd.Route;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultHttpRequest implements HttpRequest {
@@ -32,6 +33,8 @@ public class DefaultHttpRequest implements HttpRequest {
     private Route route;
 
     private HttpSession session;
+
+    private Map<String, String> formData;
 
     public DefaultHttpRequest(HttpRequestType type, String location, String httpVersion,
                               Map<String, String> headers, Map<String, Cookie> cookies,
@@ -109,6 +112,15 @@ public class DefaultHttpRequest implements HttpRequest {
     @Override
     public boolean hasQueryParameter(String key) {
         return this.queryParameters.containsKey(key);
+    }
+
+    @Override
+    public Map<String, String> getFormData() {
+        if(this.formData == null && this.requestData.length > 1) {
+            this.formData = new HashMap<>();
+        }
+
+        return null;
     }
 
     @Override

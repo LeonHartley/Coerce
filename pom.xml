@@ -27,8 +27,6 @@
         <module>Coerce-Messaging-Server</module>
         <module>Coerce-Messaging-Client</module>
         <module>Coerce-Messaging-Example</module>
-
-        <module>Coerce-Storage-Core</module>
     </modules>
 
     <properties>

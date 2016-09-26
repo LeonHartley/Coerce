@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.channels.ServerSocketChannel;
+import java.util.function.Consumer;
 
 @Singleton
 public class NioNetworkingService implements NetworkingService {
@@ -36,17 +37,22 @@ public class NioNetworkingService implements NetworkingService {
     }
 
     @Override
-    public void startService(String host, int port) {
-//        try {
-//            this.serverSocketChannel = ServerSocketChannel.open();
-//            this.serverSocketChannel.configureBlocking(false);
-//
-//            this.acceptGroup.register(this.serverSocketChannel, GroupPurpose.ACCEPT);
-//
-//            this.serverSocketChannel.socket().bind(new InetSocketAddress(host, port));
-//            Thread.currentThread().join();
-//        } catch (Exception e) {
-//            log.error("Failed to start NetworkingService on address: {}:{}", host, port, e);
-//        }
+    public void startService(String host, int port, Consumer<NetworkingService> onServiceStarted) {
+
     }
+
+//    @Override
+//    public void startService(String host, int port) {
+////        try {
+////            this.serverSocketChannel = ServerSocketChannel.open();
+////            this.serverSocketChannel.configureBlocking(false);
+////
+////            this.acceptGroup.register(this.serverSocketChannel, GroupPurpose.ACCEPT);
+////
+////            this.serverSocketChannel.socket().bind(new InetSocketAddress(host, port));
+////            Thread.currentThread().join();
+////        } catch (Exception e) {
+////            log.error("Failed to start NetworkingService on address: {}:{}", host, port, e);
+////        }
+//    }
 }

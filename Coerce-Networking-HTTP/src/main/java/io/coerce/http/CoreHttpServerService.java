@@ -39,7 +39,9 @@ public class CoreHttpServerService implements HttpServerService {
         this.networkingService.initialise(new HttpChannelHandler(this));
         this.requestQueue.initialise(4);
 
-        this.networkingService.startService(host, port);
+        this.networkingService.startService(host, port, (service) -> {
+
+        });
     }
 
     @Override

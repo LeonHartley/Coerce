@@ -1,6 +1,8 @@
 package io.coerce.services.messaging.server.net;
 
 import com.google.inject.Inject;
+import io.coerce.commons.json.JsonUtil;
+import io.coerce.messaging.commands.Command;
 import io.coerce.messaging.types.StringMessage;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.channels.NetworkChannelHandler;
@@ -48,13 +50,15 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
     @Override
     public void onMessageReceived(StringMessage message, NetworkChannel networkChannel) {
-        if (message.getPayloadType().equals("java.lang.String") && networkChannel.getAttachment(Session.class) == null) {
-            final String serviceAlias = (String) message.getPayload();
+        if (message.getPayloadType().equals(Command.INITIALISE)) {
+            if(networkChannel.getAttachment(Session.class) == null) {
+                final String serviceAlias = message.getPayload();
 
-            log.info("Service connected {}", serviceAlias, networkChannel.getId());
-            final Session session = SessionManager.getInstance().createSession(serviceAlias, networkChannel);
+                log.info("Service connected {}", serviceAlias, networkChannel.getId());
+                final Session session = SessionManager.getInstance().createSession(serviceAlias, networkChannel);
 
-            networkChannel.addAttachment(session);
+                networkChannel.addAttachment(session);
+            }
             return;
         }
 
@@ -67,7 +71,6 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
             sentMessages++;
 
-            // For now, we'll echo it back to the sender, soon we'll send it to the target.
             log.info("Message [" + sentMessages + "] received {}", message.getMessageId());
         } catch (Exception e) {
             e.printStackTrace();

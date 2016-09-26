@@ -26,6 +26,6 @@ public class JsonMessageEncoder implements ObjectEncoder<StringMessage> {
 
     @Override
     public byte[] getDelimiter() {
-        return new byte[] { 'E', 'O', 'F', '\n' };
+        return new byte[] { '\n' };
     }
 }

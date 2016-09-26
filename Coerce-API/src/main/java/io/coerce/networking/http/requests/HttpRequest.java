@@ -21,5 +21,7 @@ public interface HttpRequest extends HttpPayload {
 
     boolean hasQueryParameter(final String key);
 
+    Map<String, String> getFormData();
+
     Map<String, Cookie> getCookies();
 }

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.InetSocketAddress;
+import java.util.function.Consumer;
 
 public class NettyNetworkingService implements NetworkingService {
 
@@ -65,10 +66,12 @@ public class NettyNetworkingService implements NetworkingService {
     }
 
     @Override
-    public void startService(String host, int port) {
+    public void startService(String host, int port, Consumer<NetworkingService> onServiceStarted) {
         this.serverBootstrap.bind(new InetSocketAddress(host, port)).addListener(objectFuture -> {
             if (!objectFuture.isSuccess()) {
                 log.warn("Failed to initialise networking server on tcp://{}:{}/", host, port);
+            } else {
+                onServiceStarted.accept(this);
             }
         });
     }
