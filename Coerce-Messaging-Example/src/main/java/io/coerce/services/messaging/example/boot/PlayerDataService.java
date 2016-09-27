@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import io.coerce.commons.config.Configuration;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.client.messages.requests.types.GetAllServersRequest;
+import io.coerce.services.messaging.client.messages.requests.types.GetServersByServiceNameRequest;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataRequest;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataResponse;
 
@@ -29,7 +30,7 @@ public class PlayerDataService {
         messagingClient.connect("localhost", 8080, (client) -> {
             messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
 
-            messagingClient.submitRequest("master", new GetAllServersRequest((response) -> {
+            messagingClient.submitRequest("master", new GetServersByServiceNameRequest("player-service-*", (response) -> {
                 for(String service : response.getServices()) {
                     System.out.println("Service discovered: " + service);
                 }

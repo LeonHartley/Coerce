@@ -10,6 +10,7 @@ import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.client.messages.requests.types.GetAllServersRequest;
+import io.coerce.services.messaging.client.messages.requests.types.GetServersByServiceNameRequest;
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.messages.MessageHandler;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
@@ -55,6 +56,8 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
                             client.observe(GetAllServersRequest.class,
                                     (request) -> MessageHandler.getAllServers(messagingClient, request));
 
+                            client.observe(GetServersByServiceNameRequest.class,
+                                    (request) -> MessageHandler.getAllServersByName(messagingClient, request));
                         }));
 
         this.httpServerService.startServer("0.0.0.0", 8081);
