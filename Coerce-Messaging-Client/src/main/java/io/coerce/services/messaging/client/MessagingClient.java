@@ -25,25 +25,28 @@ public final class MessagingClient {
     private final NetworkingClient client;
     private final MessagingChannelHandler channelHandler;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private final ExecutorService executorService;
 
     @Inject
-    public MessagingClient(final String alias, NetworkingClient client, MessagingChannelHandler channelHandler) {
+    public MessagingClient(final String alias, NetworkingClient client, MessagingChannelHandler channelHandler, ExecutorService executorService) {
         this.alias = alias;
         this.client = client;
         this.channelHandler = channelHandler;
+        this.executorService = executorService;
 
         this.channelHandler.setServiceAlias(this.alias);
         this.client.configure(channelHandler);
     }
 
     public static MessagingClient create(final String alias, Configuration configuration) {
+        final ExecutorService executorService = Executors.newFixedThreadPool(4);
+
         return new MessagingClient(alias, new NettyNetworkingClient(configuration),
-                new MessagingChannelHandler(new JsonMessageEncoder(), new JsonMessageDecoder()));
+                new MessagingChannelHandler(new JsonMessageEncoder(), new JsonMessageDecoder(), executorService), executorService);
     }
 
     public void connect(String host, int port, Consumer<MessagingClient> onConnect) {
-        this.client.connect(host, port, false, (client) -> {
+        this.client.connect(host, port, true, (client) -> {
             this.sendMessage(new StringMessage(UUID.randomUUID(), this.alias, "master", Command.INITIALISE, this.alias));
 
             onConnect.accept(this);

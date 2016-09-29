@@ -7,14 +7,17 @@
       "epoll": true,
       "backlog": 100
     },
+
     "nettyClient": {
       "epoll": true,
-      "threads": 4
+      "threads": 2
     },
+
     "httpServer": {
       "requestQueueCapacity": 10000
     }
   },
+
   "modules": {
     "networking": {
       "io.coerce.networking.NetworkingService": "io.coerce.networking.netty.NettyNetworkingService",

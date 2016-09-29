@@ -6,6 +6,7 @@ import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingClient;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.channels.NetworkChannelHandler;
+import io.coerce.networking.netty.NettyNetworkingService;
 import io.coerce.networking.netty.channels.ChannelInitialiser;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -17,10 +18,15 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.net.ConnectException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class NettyNetworkingClient implements NetworkingClient {
+    private static final Logger log = LogManager.getLogger(NettyNetworkingClient.class);
 
     private final Configuration configuration;
     private final Bootstrap bootstrap;
@@ -53,17 +59,24 @@ public class NettyNetworkingClient implements NetworkingClient {
         this.bootstrap.remoteAddress(host, port);
         bootstrap.handler(new ChannelInitialiser(this.eventLoopGroup, this.handler, onConnect));
 
-        if (autoReconnect) {
-            // TODO: auto reconnect.
-        } else {
-            this.bootstrap.connect().addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if (!channelFuture.isSuccess()) {
-                        channelFuture.cause().printStackTrace();
+        this.bootstrap.connect().addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                if (!channelFuture.isSuccess()) {
+                    if (!(channelFuture.cause() instanceof ConnectException)) {
+
+                    }
+
+                    // we disconnected, try reconnect in 100ms - todo: make this configurable
+                    eventLoopGroup.schedule(() ->
+                        connect(host, port, autoReconnect, onConnect), 100, TimeUnit.MILLISECONDS);
+                } else {
+                    if(autoReconnect) {
+                        channelFuture.channel().closeFuture().addListener(
+                                (ChannelFutureListener) future -> connect(host, port, autoReconnect, onConnect));
                     }
                 }
-            });
-        }
+            }
+        });
     }
 }

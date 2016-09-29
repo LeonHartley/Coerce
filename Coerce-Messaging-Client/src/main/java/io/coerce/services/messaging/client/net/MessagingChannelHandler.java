@@ -14,7 +14,9 @@ import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 public class MessagingChannelHandler implements NetworkChannelHandler<StringMessage> {
 
@@ -22,13 +24,17 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
     private final JsonMessageEncoder messageEncoder;
     private final JsonMessageDecoder messageDecoder;
+    private final ExecutorService threadPool;
     private final Logger log = LogManager.getLogger(MessagingChannelHandler.class.getName());
     private String serviceAlias;
     private NetworkChannel networkChannel;
 
-    public MessagingChannelHandler(final JsonMessageEncoder messageEncoder, final JsonMessageDecoder messageDecoder) {
+    public MessagingChannelHandler(final JsonMessageEncoder messageEncoder,
+                                   final JsonMessageDecoder messageDecoder,
+                                   final ExecutorService threadPool) {
         this.messageEncoder = messageEncoder;
         this.messageDecoder = messageDecoder;
+        this.threadPool = threadPool;
     }
 
     @Override
@@ -40,11 +46,15 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
     @Override
     public void onChannelInactive(NetworkChannel networkChannel) {
-
+        networkChannel.close();
     }
 
     @Override
     public void onChannelError(Throwable error, NetworkChannel networkChannel) {
+        if(error instanceof IOException) {
+            return;
+        }
+
         error.printStackTrace();
     }
 
@@ -77,8 +87,14 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
             final MessageRequest entry = MessageRegistry.getInstance().getAwaitedRequest(message.getMessageId());
 
             if (entry != null) {
-                // TODO: Submit this to a separate thread pool or something
-                entry.handleResponse(JsonUtil.getGsonInstance().fromJson(message.getPayload(), entry.getResponseClass()));
+                this.threadPool.submit(() -> {
+                    try {
+                        entry.handleResponse(JsonUtil.getGsonInstance().fromJson(
+                                message.getPayload(), entry.getResponseClass()));
+                    } catch(Exception e) {
+                        log.error("Error on handling message response", e);
+                    }
+                });
             }
         } catch (Exception e) {
             log.error("Error on receiving message data", e);
