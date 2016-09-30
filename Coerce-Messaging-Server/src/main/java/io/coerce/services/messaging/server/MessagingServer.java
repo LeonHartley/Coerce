@@ -7,7 +7,6 @@ import io.coerce.networking.http.HttpServerService;
 import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
 import io.coerce.networking.http.responses.HttpResponse;
-import io.coerce.networking.http.sessions.SessionObjectKey;
 import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.client.MessagingClient;
@@ -16,9 +15,12 @@ import io.coerce.services.messaging.client.messages.requests.types.GetServersByS
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.messages.MessageHandler;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
+import io.coerce.services.messaging.server.sessions.SessionManager;
 import io.coerce.services.messaging.server.web.MessagingWebInterface;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -69,25 +71,26 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         this.webInterface = new MessagingWebInterface(this.httpServerService.getRoutingService());
         this.webInterface.initialiseRoutes();
 
-        final SessionObjectKey<String> username = new SessionObjectKey<>("Username");
+        /*final SessionObjectKey<String> username = new SessionObjectKey<>("Username");
 
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/session/:username", (request, httpResponse) -> {
             request.getSession().setObject(username, request.getUrlParameter("username"));
 
             httpResponse.send("session data set successfully");
-        });
+        });*/
 
         BiConsumer<HttpRequest, HttpResponse> consumer = (req, res) -> {
             final Map<String, Object> model = new HashMap<>();
+            final List<String> services = new ArrayList<>();
 
-            if (req.getType() == HttpRequestType.POST) {
-                model.put("formData", new String(req.getData()));
+            for (String alias : SessionManager.getInstance().getSessions().keySet()) {
+                services.add(alias);
             }
 
-            res.renderView("form", model);
+            model.put("services", services);
+            res.renderView("index.messaging", model);
         };
 
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.POST, "/", consumer);
         this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/", consumer);
     }
 

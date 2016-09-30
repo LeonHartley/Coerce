@@ -6,7 +6,6 @@ import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingClient;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.channels.NetworkChannelHandler;
-import io.coerce.networking.netty.NettyNetworkingService;
 import io.coerce.networking.netty.channels.ChannelInitialiser;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -64,14 +63,14 @@ public class NettyNetworkingClient implements NetworkingClient {
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if (!channelFuture.isSuccess()) {
                     if (!(channelFuture.cause() instanceof ConnectException)) {
-
+                        channelFuture.cause().printStackTrace();
                     }
 
                     // we disconnected, try reconnect in 100ms - todo: make this configurable
                     eventLoopGroup.schedule(() ->
-                        connect(host, port, autoReconnect, onConnect), 100, TimeUnit.MILLISECONDS);
+                            connect(host, port, autoReconnect, onConnect), 100, TimeUnit.MILLISECONDS);
                 } else {
-                    if(autoReconnect) {
+                    if (autoReconnect) {
                         channelFuture.channel().closeFuture().addListener(
                                 (ChannelFutureListener) future -> connect(host, port, autoReconnect, onConnect));
                     }

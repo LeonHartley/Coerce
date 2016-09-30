@@ -43,6 +43,7 @@ public class ThymeleafViewParser implements ViewParser {
                 suffix != null ? suffix : DEFAULT_SUFFIX
         );
 
+        //defaultTemplateResolver.setCacheable(false);
         defaultTemplateResolver.setCacheTTLMs(DEFAULT_CACHE_TTL_MS);
         defaultTemplateResolver.setResourceResolver(new FileResourceResolver());
         return defaultTemplateResolver;

@@ -1,1 +1,63 @@
-status template
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Coerce: Messaging Server - Status</title>
+
+    <style type="text/css">
+
+            body {
+                font-family: sans-serif;
+            }
+
+            .container {
+                width: 600px;
+                margin: 20px auto auto auto;
+            }
+
+            .coerce {
+                font-size: 25px;
+                float: left;
+                width: 50%;
+                text-align: left;
+                height: 50px;
+            }
+
+            .total-connections {
+                font-size: 22px;
+                float: right;
+                width: 50%;
+                height: 50px;
+                text-align: right;
+            }
+
+            .clear {
+                clear: both;
+            }
+
+            .services > div {
+                padding: 20px;
+                font-size: 20px;
+            }
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="coerce">Coerce Messaging</div>
+    <div class="clear"></div>
+
+    <div class="services">
+        <div th:each="service : ${services}">
+            <b th:text="${service}"></b>
+        </div>
+    </div>
+</div>
+
+</body>
+
+
+</html>

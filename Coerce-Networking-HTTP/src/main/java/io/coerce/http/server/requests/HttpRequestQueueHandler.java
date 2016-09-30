@@ -5,6 +5,8 @@ import io.coerce.http.types.DefaultHttpResponse;
 import io.coerce.networking.http.cookies.Cookie;
 import io.coerce.networking.http.responses.HttpResponse;
 import io.coerce.networking.http.sessions.HttpSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
 
@@ -12,10 +14,12 @@ public class HttpRequestQueueHandler extends Thread {
 
     private final HttpRequestQueue requestQueue;
     private volatile boolean running = true;
+    private final Logger log;
 
     public HttpRequestQueueHandler(final int handlerId, final HttpRequestQueue queue) {
         this.setName("HttpRequestQueue-" + handlerId);
 
+        this.log = LogManager.getLogger(this.getName());
         this.requestQueue = queue;
     }
 
@@ -52,6 +56,7 @@ public class HttpRequestQueueHandler extends Thread {
                     }
                 }
 
+                log.info("Processing queue item {}", httpRequest.getLocation());
                 this.requestQueue.getRoutingService().processRoute(httpRequest, httpResponse);
             } catch(Exception e) {
                 e.printStackTrace();
