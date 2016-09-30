@@ -26,4 +26,6 @@ public interface HttpResponse {
     HttpResponseCode getResponseCode();
 
     void setResponseCode(HttpResponseCode type);
+
+    void redirect(final String location);
 }

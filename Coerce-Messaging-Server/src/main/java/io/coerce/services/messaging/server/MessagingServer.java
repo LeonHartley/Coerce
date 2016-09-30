@@ -70,28 +70,6 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
 
         this.webInterface = new MessagingWebInterface(this.httpServerService.getRoutingService());
         this.webInterface.initialiseRoutes();
-
-        /*final SessionObjectKey<String> username = new SessionObjectKey<>("Username");
-
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/session/:username", (request, httpResponse) -> {
-            request.getSession().setObject(username, request.getUrlParameter("username"));
-
-            httpResponse.send("session data set successfully");
-        });*/
-
-        BiConsumer<HttpRequest, HttpResponse> consumer = (req, res) -> {
-            final Map<String, Object> model = new HashMap<>();
-            final List<String> services = new ArrayList<>();
-
-            for (String alias : SessionManager.getInstance().getSessions().keySet()) {
-                services.add(alias);
-            }
-
-            model.put("services", services);
-            res.renderView("index.messaging", model);
-        };
-
-        this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/", consumer);
     }
 
     @Override

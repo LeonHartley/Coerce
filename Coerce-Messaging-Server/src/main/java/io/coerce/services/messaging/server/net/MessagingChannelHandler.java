@@ -63,10 +63,16 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
         }
 
         try {
-            final Session session = SessionManager.getInstance().getSession(message.getTarget());
+            final Session session = networkChannel.getAttachment(Session.class);
+            final Session targetSession = SessionManager.getInstance().getSession(message.getTarget());
 
-            if (session != null) {
-                session.getNetworkChannel().writeAndFlush(message);
+            if(session != null) {
+                session.getTotalSentMessages().incrementAndGet();
+            }
+
+            if (targetSession != null) {
+                targetSession.getTotalSentMessages().incrementAndGet();
+                targetSession.getNetworkChannel().writeAndFlush(message);
             }
 
             sentMessages++;

@@ -5,17 +5,17 @@ import io.coerce.networking.http.requests.HttpRoutingService;
 
 public class MessagingWebInterface {
     private final HttpRoutingService routingService;
-    private final StatusController statusController;
+    private final ServiceController serviceController;
 
     public MessagingWebInterface(HttpRoutingService routingService) {
         this.routingService = routingService;
 
         // initialise controllers
-        this.statusController = new StatusController();
+        this.serviceController = new ServiceController();
     }
 
     public void initialiseRoutes() {
-        this.routingService.addRoute(HttpRequestType.GET, "/status", this.statusController::index);
-        this.routingService.addRoute(HttpRequestType.GET, "/status/get", this.statusController::status);
+        this.routingService.addRoute(HttpRequestType.GET, "/", this.serviceController::index);
+        this.routingService.addRoute(HttpRequestType.GET, "/service/:serviceName", this.serviceController::status);
     }
 }

@@ -128,6 +128,13 @@ public class DefaultHttpResponse implements HttpResponse {
         this.responseType = responseType;
     }
 
+    @Override
+    public void redirect(String location) {
+        this.setResponseCode(HttpResponseCode.MOVED);
+        this.setHeader("Location", "/");
+        this.send("");
+    }
+
     private class ResponsePayload implements HttpPayload {
 
         private final String header;
