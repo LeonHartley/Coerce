@@ -5,9 +5,6 @@ import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.http.HttpServerService;
-import io.coerce.networking.http.requests.HttpRequest;
-import io.coerce.networking.http.requests.HttpRequestType;
-import io.coerce.networking.http.responses.HttpResponse;
 import io.coerce.services.CoerceService;
 import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.messaging.client.MessagingClient;
@@ -16,14 +13,7 @@ import io.coerce.services.messaging.client.messages.requests.types.GetServersByS
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.messages.MessageHandler;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
-import io.coerce.services.messaging.server.sessions.SessionManager;
 import io.coerce.services.messaging.server.web.MessagingWebInterface;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
     private final NetworkingService networkingService;

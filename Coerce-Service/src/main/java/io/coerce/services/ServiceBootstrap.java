@@ -8,6 +8,7 @@ import io.coerce.services.configuration.ServiceConfiguration;
 import io.coerce.services.modules.ModuleMap;
 import io.coerce.services.modules.NetworkingModule;
 import io.coerce.services.modules.StartupModule;
+import io.coerce.services.shutdown.ServiceDisposer;
 
 public class ServiceBootstrap {
     public static <T extends CoerceService> T startService(Class<T> serviceClass, String[] args) {
@@ -23,6 +24,10 @@ public class ServiceBootstrap {
 
         try {
             final T service = injector.getInstance(serviceClass);
+
+            // Initialise any shutdown hooks
+            final ServiceDisposer serviceDisposer = injector.getInstance(ServiceDisposer.class);
+            serviceDisposer.addService(service);
 
             // Submit this to a thread pool?
             service.onServiceInitialised();
