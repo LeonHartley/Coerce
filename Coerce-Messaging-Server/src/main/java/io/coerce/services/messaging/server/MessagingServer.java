@@ -19,11 +19,9 @@ import io.coerce.services.messaging.server.web.MessagingWebInterface;
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
     private final NetworkingService networkingService;
 
-    private final Configuration configuration;
     private final MessagingChannelHandler channelHandler;
     private final HttpServerService httpServerService;
     private final MessagingClient messagingClient;
-    private final MessageHandler messageHandler;
     private final SessionManager sessionManager;
 
     private MessagingWebInterface webInterface;
@@ -31,14 +29,13 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
     @Inject
     public MessagingServer(String[] runtimeArgs, ServiceConfiguration serviceConfiguration,
                            NetworkingService networkingService, CoerceConfiguration configuration,
-                           MessagingChannelHandler channelHandler, HttpServerService httpServer, MessageHandler messageHandler, SessionManager sessionManager) {
+                           MessagingChannelHandler channelHandler, HttpServerService httpServer,
+                           SessionManager sessionManager) {
         super(runtimeArgs, (MessagingServerConfiguration) serviceConfiguration);
 
         this.networkingService = networkingService;
-        this.configuration = configuration;
         this.channelHandler = channelHandler;
         this.httpServerService = httpServer;
-        this.messageHandler = messageHandler;
         this.sessionManager = sessionManager;
 
         this.messagingClient = MessagingClient.create("master", configuration);
