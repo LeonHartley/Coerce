@@ -78,7 +78,7 @@ messagingClient.connect("localhost", 8080, (client) -> {
 ## HTTP Server
 Coerce has a built-in HTTP framework, allowing you to create web services without the need for the amount of initialisation you usually come to expect with building websites in Java. Coerce makes this really simple:
 
-~This example presumes you are using Coerce-Service and are injecting a HttpServerService instance into your application.~
+_This example presumes you are using Coerce-Service and are injecting a HttpServerService instance into your application._
 
 ```java
 // Initialise the routes
