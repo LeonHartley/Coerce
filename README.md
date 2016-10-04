@@ -1,8 +1,11 @@
 # Coerce
 Coerce is a set of Java libraries created to make high-concurrent and high-performance application development easier. It is distributed under the Apache v2 license.
 
-## How are messages structured?
-### Request Object
+## Messaging
+Coerce Messaging is a library and a server created to make an extremely simple microservice architecture with little code and configuration.
+
+### How are messages structured?
+#### Request Object
 ```java
 public class PlayerDataRequest extends MessageRequest<PlayerDataResponse> {
     private final int playerId;
@@ -24,7 +27,7 @@ public class PlayerDataRequest extends MessageRequest<PlayerDataResponse> {
 }
 ```
 
-### Response Object
+#### Response Object
 ```java
 public class PlayerDataResponse implements MessageResponse {
     private final String username;
@@ -45,7 +48,7 @@ public class PlayerDataResponse implements MessageResponse {
 }
 ```
 
-## How do I request messages?
+### How do I request messages?
 To send requests, first we need to connect to the messaging server and assign an alias to our service. Once that's done and we're fully connected, we can begin requesting messages.
 
 ```java
@@ -56,7 +59,7 @@ messagingClient.connect("localhost", 8080, (client) -> {
 });
 ```
 
-## How do I listen for message requests?
+### How do I listen for message requests?
 The following code is a full example that shows how we begin observing for messages based on the class.
 
 ```java
@@ -72,6 +75,25 @@ messagingClient.connect("localhost", 8080, (client) -> {
 });
 ```
 
+## HTTP Server
+Coerce has a built-in HTTP framework, allowing you to create web services without the need for the amount of initialisation you usually come to expect with building websites in Java. Coerce makes this really simple:
+
+~This example presumes you are using Coerce-Service and are injecting a HttpServerService instance into your application.~
+
+```java
+// Initialise the routes
+this.httpServerService.getRoutingService().addRoute(HttpRequestType.GET, "/", (req, res) -> {
+    res.send("hello world!");    
+});
+
+// Start the server
+this.httpServerService.start("127.0.0.1", 8080);
+```
+
+Once this is running, visiting "http://127.0.0.1:8080" will output "hello world!"! 
+
+## Service
+The Coerce-Service module was created to remove the need to write boilerplate code to initialise components like configuration and also provides easy access to Guice for dependency injection.
 
 ## Author
 Leon Hartley (<lhartley97@gmail.com>)
