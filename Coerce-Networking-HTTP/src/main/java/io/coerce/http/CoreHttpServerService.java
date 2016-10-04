@@ -1,6 +1,8 @@
 package io.coerce.http;
 
 import com.google.inject.Inject;
+import io.coerce.commons.config.CoerceConfiguration;
+import io.coerce.commons.config.Configuration;
 import io.coerce.http.server.HttpChannelHandler;
 import io.coerce.http.server.requests.HttpRequestQueue;
 import io.coerce.http.server.requests.HttpRequestService;
@@ -23,21 +25,23 @@ public class CoreHttpServerService implements HttpServerService {
     private HttpSessionService sessionService;
     private NetworkChannelHandler channelHandler;
     private HttpRequestQueue requestQueue;
+    private Configuration configuration;
 
     @Inject
-    public CoreHttpServerService(NetworkingService networkingService, HttpRequestService requestService) {
+    public CoreHttpServerService(NetworkingService networkingService, HttpRequestService requestService, CoerceConfiguration configuration) {
         this.networkingService = networkingService;
         this.routingService = requestService;
 
         this.sessionService = new DefaultSessionService();
         this.viewParser = new ThymeleafViewParser();
-        this.requestQueue = new HttpRequestQueue(this, 1000);
+        this.configuration = configuration.getObject("httpServer");
+        this.requestQueue = new HttpRequestQueue(this, this.configuration.getInt("requestQueueCapacity"));
     }
 
     @Override
     public void startServer(String host, int port) {
         this.networkingService.initialise(new HttpChannelHandler(this));
-        this.requestQueue.initialise(4);
+        this.requestQueue.initialise(this.configuration.getInt("requestQueueWorkers"));
 
         this.networkingService.startService(host, port, (service) -> {
 

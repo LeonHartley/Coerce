@@ -1,6 +1,7 @@
 package io.coerce.services.messaging.example.boot;
 
 import com.google.common.collect.Maps;
+import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.client.messages.requests.types.GetAllServersRequest;
@@ -18,7 +19,7 @@ public class PlayerDataService {
         database.put(2, "Jack");
         database.put(3, "Tony");
 
-        final Configuration configuration = new Configuration();
+        final Configuration configuration = new CoerceConfiguration();
 
         final MessagingClient messagingClient = MessagingClient.create(args[0], configuration);
 

@@ -1,21 +1,19 @@
 {
-  "config": {
-    "nettyServer": {
-      "ioGroup": 4,
-      "channelGroup": 4,
-      "acceptGroup": 4,
-      "epoll": true,
-      "backlog": 100
-    },
-
-    "nettyClient": {
-      "epoll": true,
-      "threads": 2
-    },
-
-    "httpServer": {
-      "requestQueueCapacity": 10000
-    }
+  "nettyServer": {
+    "ioGroup": 4,
+    "channelGroup": 4,
+    "acceptGroup": 4,
+    "epoll": true,
+    "backlog": 100,
+    "tcpNoDelay": true
+  },
+  "nettyClient": {
+    "epoll": true,
+    "threads": 2
+  },
+  "httpServer": {
+    "requestQueueCapacity": 10000,
+    "requestQueueWorkers": 4
   },
 
   "modules": {
@@ -25,4 +23,4 @@
       "io.coerce.networking.http.HttpServerService": "io.coerce.http.CoreHttpServerService"
     }
   }
-} 
+}

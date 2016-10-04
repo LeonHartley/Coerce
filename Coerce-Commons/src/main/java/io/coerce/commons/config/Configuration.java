@@ -5,13 +5,14 @@ import com.google.inject.Singleton;
 import io.coerce.commons.io.FileUtil;
 import io.coerce.commons.json.JsonUtil;
 
-@Singleton
 public class Configuration {
     private final JsonObject config;
 
-    public Configuration() {
-        this.config = JsonUtil.getGsonInstance().fromJson(FileUtil.loadFile("configuration/Configuration.json"),
-                JsonObject.class).getAsJsonObject("config");
+    public Configuration(final String configurationFile) {
+        final String fileContents = FileUtil.loadFile(configurationFile);
+
+        this.config = JsonUtil.getGsonInstance().fromJson(fileContents,
+                JsonObject.class);
     }
 
     public Configuration(JsonObject jsonObject) {

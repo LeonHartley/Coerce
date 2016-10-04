@@ -1,6 +1,7 @@
 package io.coerce.networking.netty;
 
 import com.google.inject.Inject;
+import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.channels.NetworkChannel;
@@ -34,7 +35,7 @@ public class NettyNetworkingService implements NetworkingService {
     private Logger log = LogManager.getLogger(NettyNetworkingService.class);
 
     @Inject
-    public NettyNetworkingService(final Configuration configuration) {
+    public NettyNetworkingService(final CoerceConfiguration configuration) {
         this.configuration = configuration.getObject("nettyServer");
     }
 
@@ -61,7 +62,7 @@ public class NettyNetworkingService implements NetworkingService {
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .option(ChannelOption.MESSAGE_SIZE_ESTIMATOR, DefaultMessageSizeEstimator.DEFAULT)
-                .childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.TCP_NODELAY, this.configuration.getBoolean("tcpNoDelay"))
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
     }
 

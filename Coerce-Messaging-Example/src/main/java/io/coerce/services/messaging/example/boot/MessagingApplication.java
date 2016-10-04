@@ -1,6 +1,7 @@
 package io.coerce.services.messaging.example.boot;
 
 import com.google.common.base.Stopwatch;
+import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
@@ -19,7 +20,7 @@ public class MessagingApplication {
 
        // final Stopwatch stopwatch = Stopwatch.createStarted();
 
-        final Configuration configuration = new Configuration();
+        final CoerceConfiguration configuration = new CoerceConfiguration();
 
         this.messagingClient = MessagingClient.create("test-client", configuration);
 

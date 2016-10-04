@@ -1,6 +1,7 @@
 package io.coerce.services.messaging.client;
 
 import com.google.inject.Inject;
+import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.commons.json.JsonUtil;
 import io.coerce.messaging.Message;
@@ -38,7 +39,7 @@ public final class MessagingClient {
         this.client.configure(channelHandler);
     }
 
-    public static MessagingClient create(final String alias, Configuration configuration) {
+    public static MessagingClient create(final String alias, CoerceConfiguration configuration) {
         final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         return new MessagingClient(alias, new NettyNetworkingClient(configuration),

@@ -20,17 +20,24 @@ public class ServiceBootstrap {
         configureLogging();
 
         final Injector injector = createServiceInjector(args, configuration);
-        final T service = injector.getInstance(serviceClass);
 
-        // Submit this to a thread pool?
-        service.onServiceInitialised();
+        try {
+            final T service = injector.getInstance(serviceClass);
 
-        return service;
+            // Submit this to a thread pool?
+            service.onServiceInitialised();
+
+            return service;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private static Injector createServiceInjector(String[] args, final ServiceConfiguration configuration) {
         final ModuleMap moduleMap = JsonUtil.getGsonInstance().fromJson(
-                FileUtil.loadFile("configuration/Configuration.json"), ModuleMap.class);
+                FileUtil.loadFile("configuration/Coerce.json"), ModuleMap.class);
 
         return Guice.createInjector(
                 new StartupModule(args, configuration),

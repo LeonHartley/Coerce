@@ -2,6 +2,7 @@ package io.coerce.networking.netty.clients;
 
 
 import com.google.inject.Inject;
+import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingClient;
 import io.coerce.networking.channels.NetworkChannel;
@@ -33,7 +34,7 @@ public class NettyNetworkingClient implements NetworkingClient {
     private EventLoopGroup eventLoopGroup;
 
     @Inject
-    public NettyNetworkingClient(Configuration configuration) {
+    public NettyNetworkingClient(CoerceConfiguration configuration) {
         this.configuration = configuration.getObject("nettyClient");
         this.bootstrap = new Bootstrap();
     }

@@ -1,6 +1,7 @@
 package io.coerce.services.messaging.server;
 
 import com.google.inject.Inject;
+import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.http.HttpServerService;
@@ -37,7 +38,7 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
 
     @Inject
     public MessagingServer(String[] runtimeArgs, ServiceConfiguration serviceConfiguration,
-                           NetworkingService networkingService, Configuration configuration,
+                           NetworkingService networkingService, CoerceConfiguration configuration,
                            MessagingChannelHandler channelHandler, HttpServerService httpServer, MessageHandler messageHandler) {
         super(runtimeArgs, (MessagingServerConfiguration) serviceConfiguration);
 
