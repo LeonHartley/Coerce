@@ -11,22 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageHandler {
-    public static void getAllServers(final MessagingClient client, final GetAllServersRequest request) {
+    public static void getAllServers(final MessagingClient client, final GetAllServersRequest request,
+                                     final SessionManager sessionManager) {
         final List<String> services = new ArrayList<>();
 
-        for (String alias : SessionManager.getInstance().getSessions().keySet()) {
+        for (String alias : sessionManager.getSessions().keySet()) {
             services.add(alias);
         }
 
         client.sendResponse(request.getMessageId(), request.getSender(), new GetAllServersResponse(services));
     }
 
-    public static void getAllServersByName(final MessagingClient client, final GetServersByServiceNameRequest request) {
+    public static void getAllServersByName(final MessagingClient client, final GetServersByServiceNameRequest request,
+                                           SessionManager sessionManager) {
         final List<String> services = new ArrayList<>();
 
         final String searchString = request.getNamePattern().replace("*", "");
 
-        for (String alias : SessionManager.getInstance().getSessions().keySet()) {
+        for (String alias : sessionManager.getSessions().keySet()) {
             if(alias.startsWith(searchString)) {
                 services.add(alias);
             }

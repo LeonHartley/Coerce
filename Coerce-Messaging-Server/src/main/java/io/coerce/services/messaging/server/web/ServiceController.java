@@ -12,11 +12,17 @@ import java.util.List;
 import java.util.Map;
 
 public class ServiceController {
+    private final SessionManager sessionManager;
+
+    public ServiceController(final SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
     public void index(HttpRequest req, HttpResponse res) {
         final Map<String, Object> model = new HashMap<>();
         final List<String> services = new ArrayList<>();
 
-        for (String alias : SessionManager.getInstance().getSessions().keySet()) {
+        for (String alias : this.sessionManager.getSessions().keySet()) {
             services.add(alias);
         }
 
@@ -28,7 +34,7 @@ public class ServiceController {
         final Map<String, Object> model = new HashMap<>();
         final String serviceName = request.getUrlParameter("serviceName");
 
-        final Session session = SessionManager.getInstance().getSession(serviceName);
+        final Session session = this.sessionManager.getSession(serviceName);
 
         if(session == null) {
             response.redirect("/");

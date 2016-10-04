@@ -19,14 +19,17 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
     private final JsonMessageEncoder messageEncoder;
     private final JsonMessageDecoder messageDecoder;
+    private final SessionManager sessionManager;
 
     private final Logger log = LogManager.getLogger(MessagingChannelHandler.class);
     private volatile int sentMessages = 0;
 
     @Inject
-    public MessagingChannelHandler(final JsonMessageEncoder messageEncoder, final JsonMessageDecoder messageDecoder) {
+    public MessagingChannelHandler(final JsonMessageEncoder messageEncoder, final JsonMessageDecoder messageDecoder,
+                                   SessionManager sessionManager) {
         this.messageEncoder = messageEncoder;
         this.messageDecoder = messageDecoder;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
     @Override
     public void onChannelInactive(NetworkChannel networkChannel) {
         if (networkChannel.getAttachment(Session.class) != null) {
-            SessionManager.getInstance().removeSession(networkChannel.getAttachment(Session.class).getAlias());
+            this.sessionManager.removeSession(networkChannel.getAttachment(Session.class).getAlias());
         }
 
         log.info("Channel disconnected {}", networkChannel.getId());
@@ -55,7 +58,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
                 final String serviceAlias = message.getPayload();
 
                 log.info("Service connected {}", serviceAlias, networkChannel.getId());
-                final Session session = SessionManager.getInstance().createSession(serviceAlias, networkChannel);
+                final Session session = this.sessionManager.createSession(serviceAlias, networkChannel);
 
                 networkChannel.addAttachment(session);
             }
@@ -64,7 +67,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
         try {
             final Session session = networkChannel.getAttachment(Session.class);
-            final Session targetSession = SessionManager.getInstance().getSession(message.getTarget());
+            final Session targetSession = this.sessionManager.getSession(message.getTarget());
 
             if(session != null) {
                 session.getTotalSentMessages().incrementAndGet();

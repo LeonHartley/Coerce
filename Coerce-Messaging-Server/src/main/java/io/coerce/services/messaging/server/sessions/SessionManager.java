@@ -1,6 +1,7 @@
 package io.coerce.services.messaging.server.sessions;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
 import io.coerce.messaging.Message;
 import io.coerce.networking.channels.NetworkChannel;
 
@@ -8,17 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class SessionManager {
-    private static final SessionManager sessionManager = new SessionManager();
-
     private final Map<String, Session> sessions;
 
     public SessionManager() {
         this.sessions = new ConcurrentHashMap<>();
-    }
-
-    public static SessionManager getInstance() {
-        return sessionManager;
     }
 
     public Session getSession(final String alias) {

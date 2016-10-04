@@ -13,6 +13,7 @@ import io.coerce.services.messaging.client.messages.requests.types.GetServersByS
 import io.coerce.services.messaging.server.configuration.MessagingServerConfiguration;
 import io.coerce.services.messaging.server.messages.MessageHandler;
 import io.coerce.services.messaging.server.net.MessagingChannelHandler;
+import io.coerce.services.messaging.server.sessions.SessionManager;
 import io.coerce.services.messaging.server.web.MessagingWebInterface;
 
 public class MessagingServer extends CoerceService<MessagingServerConfiguration> {
@@ -23,13 +24,14 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
     private final HttpServerService httpServerService;
     private final MessagingClient messagingClient;
     private final MessageHandler messageHandler;
+    private final SessionManager sessionManager;
 
     private MessagingWebInterface webInterface;
 
     @Inject
     public MessagingServer(String[] runtimeArgs, ServiceConfiguration serviceConfiguration,
                            NetworkingService networkingService, CoerceConfiguration configuration,
-                           MessagingChannelHandler channelHandler, HttpServerService httpServer, MessageHandler messageHandler) {
+                           MessagingChannelHandler channelHandler, HttpServerService httpServer, MessageHandler messageHandler, SessionManager sessionManager) {
         super(runtimeArgs, (MessagingServerConfiguration) serviceConfiguration);
 
         this.networkingService = networkingService;
@@ -37,6 +39,7 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
         this.channelHandler = channelHandler;
         this.httpServerService = httpServer;
         this.messageHandler = messageHandler;
+        this.sessionManager = sessionManager;
 
         this.messagingClient = MessagingClient.create("master", configuration);
     }
@@ -51,15 +54,15 @@ public class MessagingServer extends CoerceService<MessagingServerConfiguration>
                         this.getConfiguration().getPort(),
                         (client) -> {
                             client.observe(GetAllServersRequest.class,
-                                    (request) -> MessageHandler.getAllServers(messagingClient, request));
+                                    (request) -> MessageHandler.getAllServers(messagingClient, request, sessionManager));
 
                             client.observe(GetServersByServiceNameRequest.class,
-                                    (request) -> MessageHandler.getAllServersByName(messagingClient, request));
+                                    (request) -> MessageHandler.getAllServersByName(messagingClient, request, sessionManager));
                         }));
 
         this.httpServerService.startServer("0.0.0.0", 8081);
 
-        this.webInterface = new MessagingWebInterface(this.httpServerService.getRoutingService());
+        this.webInterface = new MessagingWebInterface(this.httpServerService.getRoutingService(), this.sessionManager);
         this.webInterface.initialiseRoutes();
     }
 
