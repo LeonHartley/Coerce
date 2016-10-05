@@ -74,7 +74,7 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
             }
 
             if (targetSession != null) {
-                targetSession.getTotalSentMessages().incrementAndGet();
+                targetSession.getTotalReceivedMessages().incrementAndGet();
                 targetSession.getNetworkChannel().writeAndFlush(message);
             }
 

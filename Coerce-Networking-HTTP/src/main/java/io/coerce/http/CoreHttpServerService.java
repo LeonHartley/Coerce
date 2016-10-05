@@ -11,10 +11,11 @@ import io.coerce.http.server.sessions.DefaultSessionService;
 import io.coerce.networking.NetworkingService;
 import io.coerce.networking.channels.NetworkChannelHandler;
 import io.coerce.networking.http.HttpServerService;
-import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRoutingService;
 import io.coerce.networking.http.responses.views.ViewParser;
 import io.coerce.networking.http.sessions.HttpSessionService;
+
+import java.util.function.Consumer;
 
 public class CoreHttpServerService implements HttpServerService {
 
@@ -39,12 +40,12 @@ public class CoreHttpServerService implements HttpServerService {
     }
 
     @Override
-    public void startServer(String host, int port) {
+    public void startServer(String host, int port, Consumer<HttpServerService> onCompletion) {
         this.networkingService.initialise(new HttpChannelHandler(this));
         this.requestQueue.initialise(this.configuration.getInt("requestQueueWorkers"));
 
         this.networkingService.startService(host, port, (service) -> {
-
+            onCompletion.accept(this);
         });
     }
 

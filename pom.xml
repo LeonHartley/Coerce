@@ -27,6 +27,9 @@
         <module>Coerce-Messaging-Server</module>
         <module>Coerce-Messaging-Client</module>
         <module>Coerce-Messaging-Example</module>
+
+        <!-- Persistence -->
+        <module>Coerce-Persistence-Dao</module>
     </modules>
 
     <properties>

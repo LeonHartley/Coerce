@@ -86,5 +86,10 @@
             <artifactId>Coerce-Messaging-Client</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>Coerce</groupId>
+            <artifactId>Coerce-Persistence-Dao</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

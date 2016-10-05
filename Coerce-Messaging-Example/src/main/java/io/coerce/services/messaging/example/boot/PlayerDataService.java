@@ -19,7 +19,7 @@ public class PlayerDataService {
         database.put(2, "Jack");
         database.put(3, "Tony");
 
-        final Configuration configuration = new CoerceConfiguration();
+        final CoerceConfiguration configuration = new CoerceConfiguration();
 
         final MessagingClient messagingClient = MessagingClient.create(args[0], configuration);
 
