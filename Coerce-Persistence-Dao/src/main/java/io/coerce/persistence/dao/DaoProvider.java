@@ -1,5 +1,6 @@
 package io.coerce.persistence.dao;
 
+import com.google.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,9 +15,11 @@ public class DaoProvider {
     private final Map<Class<? extends Dao>, Dao> daoInstanceCache;
     private final InvocationHandler invocationHandler;
 
-    public DaoProvider() {
+    @Inject
+    public DaoProvider(DaoProxyInvocationHandler invocationHandler) {
+        this.invocationHandler = invocationHandler;
+
         this.daoInstanceCache = new ConcurrentHashMap<>();
-        this.invocationHandler = new DaoProxyInvocationHandler();
     }
 
     public <T extends Dao> T getDao(Class<T> clazz) {
