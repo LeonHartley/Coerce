@@ -1,13 +1,19 @@
 package io.coerce.services.messaging.client.messages.requests;
 
+import io.coerce.commons.json.JsonExclude;
+import io.coerce.services.messaging.client.MessageFuture;
 import io.coerce.services.messaging.client.messages.response.MessageResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 public abstract class MessageRequest<T extends MessageResponse> {
     private static final Logger log = LogManager.getLogger(MessageRequest.class.getName());
+
+    @JsonExclude
+    private MessageFuture<T> future;
 
     private final UUID messageId;
     private final long timestamp;
@@ -32,6 +38,10 @@ public abstract class MessageRequest<T extends MessageResponse> {
         final T object = this.getResponseClass().cast(data);
 
         try {
+            if(this.future != null) {
+                this.future.setResponse(object);
+            }
+
             this.onResponseReceived(object);
         } catch (Exception e) {
             log.error("Error while handing response with ID {}", this.getMessageId(), e);
@@ -50,5 +60,13 @@ public abstract class MessageRequest<T extends MessageResponse> {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public MessageFuture<T> getFuture() {
+        return this.future;
+    }
+
+    public void setFuture(final MessageFuture<T> future) {
+        this.future = future;
     }
 }

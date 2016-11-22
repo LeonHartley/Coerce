@@ -2,7 +2,6 @@ package io.coerce.services.messaging.client;
 
 import com.google.inject.Inject;
 import io.coerce.commons.config.CoerceConfiguration;
-import io.coerce.commons.config.Configuration;
 import io.coerce.commons.json.JsonUtil;
 import io.coerce.messaging.Message;
 import io.coerce.messaging.commands.Command;
@@ -17,8 +16,7 @@ import io.coerce.services.messaging.core.net.codec.JsonMessageDecoder;
 import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public final class MessagingClient {
@@ -50,7 +48,9 @@ public final class MessagingClient {
         this.client.connect(host, port, true, (client) -> {
             this.sendMessage(new StringMessage(UUID.randomUUID(), this.alias, "master", Command.INITIALISE, this.alias));
 
-            onConnect.accept(this);
+            this.executorService.submit(() -> {
+                onConnect.accept(this);
+            });
         });
     }
 
@@ -58,8 +58,11 @@ public final class MessagingClient {
         MessageRegistry.getInstance().observeForMessages(messageRequestClass, consumer);
     }
 
-    public void submitRequest(final String destination, final MessageRequest messageRequest) {
+    public <T extends MessageResponse> MessageFuture<T> submitRequest(final String destination, final MessageRequest<T> messageRequest) {
+        final MessageFuture<T> future = new MessageFuture<T>(messageRequest);
+
         this.executorService.execute(() -> {
+            messageRequest.setFuture(future);
             MessageRegistry.getInstance().awaitResponse(messageRequest);
 
             messageRequest.setSender(this.alias);
@@ -68,6 +71,8 @@ public final class MessagingClient {
                     new StringMessage(messageRequest.getMessageId(), this.alias, destination,
                             messageRequest.getClass().getName(), JsonUtil.getGsonInstance().toJson(messageRequest)));
         });
+
+        return future;
     }
 
     public void flushData() {

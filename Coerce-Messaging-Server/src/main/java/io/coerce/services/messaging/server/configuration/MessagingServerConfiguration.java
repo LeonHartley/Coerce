@@ -6,10 +6,12 @@ public class MessagingServerConfiguration implements ServiceConfiguration {
 
     private final String hostName;
     private final int port;
+    private final String authenticationKey;
 
-    public MessagingServerConfiguration(final String hostName, final int port) {
+    public MessagingServerConfiguration(final String hostName, final int port, final String authenticationKey) {
         this.hostName = hostName;
         this.port = port;
+        this.authenticationKey = authenticationKey;
     }
 
     public String getHostName() {
@@ -18,5 +20,9 @@ public class MessagingServerConfiguration implements ServiceConfiguration {
 
     public int getPort() {
         return this.port;
+    }
+
+    public String getAuthenticationKey() {
+        return authenticationKey;
     }
 }

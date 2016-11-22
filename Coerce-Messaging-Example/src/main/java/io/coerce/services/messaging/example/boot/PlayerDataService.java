@@ -3,23 +3,26 @@ package io.coerce.services.messaging.example.boot;
 import com.google.common.collect.Maps;
 import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.commons.config.Configuration;
+import io.coerce.services.messaging.client.MessageFuture;
 import io.coerce.services.messaging.client.MessagingClient;
 import io.coerce.services.messaging.client.messages.requests.types.GetAllServersRequest;
 import io.coerce.services.messaging.client.messages.requests.types.GetServersByServiceNameRequest;
+import io.coerce.services.messaging.client.messages.response.types.GetServersByServiceNameResponse;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataRequest;
 import io.coerce.services.messaging.example.boot.messages.player.PlayerDataResponse;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class PlayerDataService {
     private static final Map<Integer, String> database = Maps.newConcurrentMap();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         database.put(1, "Leon");
         database.put(2, "Jack");
         database.put(3, "Tony");
 
-        final Configuration configuration = new CoerceConfiguration();
+        final CoerceConfiguration configuration = new CoerceConfiguration();
 
         final MessagingClient messagingClient = MessagingClient.create(args[0], configuration);
 
@@ -29,13 +32,26 @@ public class PlayerDataService {
         }));
 
         messagingClient.connect("localhost", 8080, (client) -> {
-            messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
+            final long startTime = System.currentTimeMillis();
 
-            messagingClient.submitRequest("master", new GetServersByServiceNameRequest("player-service-*", (response) -> {
-                for(String service : response.getServices()) {
+            MessageFuture<GetServersByServiceNameResponse> future = messagingClient.submitRequest("master",
+                    new GetServersByServiceNameRequest("player-service-*", (response) -> {
+                    }));
+
+            try {
+                final GetServersByServiceNameResponse response = future.get();
+
+                final long timeDifference = System.currentTimeMillis() - startTime;
+
+                System.out.println("it took " + timeDifference + "ms to get a response");
+
+                for (String service : response.getServices()) {
                     System.out.println("Service discovered: " + service);
                 }
-            }));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
+
     }
 }
