@@ -9,21 +9,12 @@ import java.util.function.Consumer;
 
 public class GetServersByServiceNameRequest extends MessageRequest<GetServersByServiceNameResponse> {
 
-    @JsonExclude
-    private final Consumer<GetServersByServiceNameResponse> onCompletion;
-
     private final String namePattern;
 
-    public GetServersByServiceNameRequest(final String namePattern, final Consumer<GetServersByServiceNameResponse> onCompletion) {
+    public GetServersByServiceNameRequest(final String namePattern) {
         super(UUID.randomUUID(), GetServersByServiceNameResponse.class);
 
         this.namePattern = namePattern;
-        this.onCompletion = onCompletion;
-    }
-
-    @Override
-    protected void onResponseReceived(GetServersByServiceNameResponse response) {
-        this.onCompletion.accept(response);
     }
 
     public String getNamePattern() {

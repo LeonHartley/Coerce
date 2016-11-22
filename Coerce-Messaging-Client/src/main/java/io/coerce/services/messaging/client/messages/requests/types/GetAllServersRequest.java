@@ -9,16 +9,7 @@ import java.util.function.Consumer;
 
 public class GetAllServersRequest extends MessageRequest<GetAllServersResponse> {
 
-    @JsonExclude
-    private final Consumer<GetAllServersResponse> onCompletion;
-
-    public GetAllServersRequest(Consumer<GetAllServersResponse> onCompletion) {
+    public GetAllServersRequest() {
         super(UUID.randomUUID(), GetAllServersResponse.class);
-        this.onCompletion = onCompletion;
-    }
-
-    @Override
-    protected void onResponseReceived(GetAllServersResponse response) {
-        this.onCompletion.accept(response);
     }
 }

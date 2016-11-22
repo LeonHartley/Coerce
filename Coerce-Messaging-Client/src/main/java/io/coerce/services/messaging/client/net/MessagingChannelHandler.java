@@ -9,8 +9,8 @@ import io.coerce.networking.codec.ObjectDecoder;
 import io.coerce.networking.codec.ObjectEncoder;
 import io.coerce.services.messaging.client.messages.MessageRegistry;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
-import io.coerce.services.messaging.core.net.codec.JsonMessageDecoder;
-import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
+import io.coerce.services.messaging.core.net.codec.MessageObjectDecoder;
+import io.coerce.services.messaging.core.net.codec.MessageObjectEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,15 +22,15 @@ public class MessagingChannelHandler implements NetworkChannelHandler<StringMess
 
     private final Map<String, Class> classCache = Maps.newConcurrentMap();
 
-    private final JsonMessageEncoder messageEncoder;
-    private final JsonMessageDecoder messageDecoder;
+    private final MessageObjectEncoder messageEncoder;
+    private final MessageObjectDecoder messageDecoder;
     private final ExecutorService threadPool;
     private final Logger log = LogManager.getLogger(MessagingChannelHandler.class.getName());
     private String serviceAlias;
     private NetworkChannel networkChannel;
 
-    public MessagingChannelHandler(final JsonMessageEncoder messageEncoder,
-                                   final JsonMessageDecoder messageDecoder,
+    public MessagingChannelHandler(final MessageObjectEncoder messageEncoder,
+                                   final MessageObjectDecoder messageDecoder,
                                    final ExecutorService threadPool) {
         this.messageEncoder = messageEncoder;
         this.messageDecoder = messageDecoder;

@@ -32,25 +32,32 @@ public class PlayerDataService {
         }));
 
         messagingClient.connect("localhost", 8080, (client) -> {
-            final long startTime = System.currentTimeMillis();
+            final long totalStartTime = System.currentTimeMillis();
 
-            MessageFuture<GetServersByServiceNameResponse> future = messagingClient.submitRequest("master",
-                    new GetServersByServiceNameRequest("player-service-*", (response) -> {
-                    }));
+            for(int i = 0; i < 10000; i++) {
+                final long startTime = System.currentTimeMillis();
 
-            try {
-                final GetServersByServiceNameResponse response = future.get();
+                MessageFuture<GetServersByServiceNameResponse> future = messagingClient.submitRequest("master",
+                        new GetServersByServiceNameRequest("player-service-*"), (response) -> {
+                            for (String service : response.getServices()) {
+                                System.out.println("Service discovered: " + service);
+                            }
+                        });
+                try {
+                    //final GetServersByServiceNameResponse response = future.get();//
 
-                final long timeDifference = System.currentTimeMillis() - startTime;
+                    final long timeDifference = System.currentTimeMillis() - startTime;
 
-                System.out.println("it took " + timeDifference + "ms to get a response");
-
-                for (String service : response.getServices()) {
-                    System.out.println("Service discovered: " + service);
+                    System.out.println("it took " + timeDifference + "ms to get a response");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
+            final long totalDifference = System.currentTimeMillis() - totalStartTime;
+
+            System.out.println("It took " + totalDifference + "ms to submit & handle 10k message responses");
+
         });
 
     }

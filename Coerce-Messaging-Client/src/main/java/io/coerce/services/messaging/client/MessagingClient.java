@@ -12,8 +12,8 @@ import io.coerce.services.messaging.client.messages.MessageRegistry;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
 import io.coerce.services.messaging.client.messages.response.MessageResponse;
 import io.coerce.services.messaging.client.net.MessagingChannelHandler;
-import io.coerce.services.messaging.core.net.codec.JsonMessageDecoder;
-import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
+import io.coerce.services.messaging.core.net.codec.MessageObjectDecoder;
+import io.coerce.services.messaging.core.net.codec.MessageObjectEncoder;
 
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -41,7 +41,7 @@ public final class MessagingClient {
         final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         return new MessagingClient(alias, new NettyNetworkingClient(configuration),
-                new MessagingChannelHandler(new JsonMessageEncoder(), new JsonMessageDecoder(), executorService), executorService);
+                new MessagingChannelHandler(new MessageObjectEncoder(), new MessageObjectDecoder(), executorService), executorService);
     }
 
     public void connect(String host, int port, Consumer<MessagingClient> onConnect) {
@@ -56,6 +56,15 @@ public final class MessagingClient {
 
     public <T extends MessageRequest> void observe(Class<T> messageRequestClass, Consumer<T> consumer) {
         MessageRegistry.getInstance().observeForMessages(messageRequestClass, consumer);
+    }
+
+
+    public <T extends MessageResponse> MessageFuture<T> submitRequest(final String destination, final MessageRequest<T> messageRequest, Consumer<T> messageResponseConsumer) {
+        final MessageFuture<T> future = this.submitRequest(destination, messageRequest);
+
+        future.addListener(messageResponseConsumer);
+
+        return future;
     }
 
     public <T extends MessageResponse> MessageFuture<T> submitRequest(final String destination, final MessageRequest<T> messageRequest) {

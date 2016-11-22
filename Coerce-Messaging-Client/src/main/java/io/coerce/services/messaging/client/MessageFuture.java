@@ -3,12 +3,17 @@ package io.coerce.services.messaging.client;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
 import io.coerce.services.messaging.client.messages.response.MessageResponse;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class MessageFuture<T extends MessageResponse> implements Future {
 
     private final MessageRequest<T> messageRequest;
     private final BlockingQueue<T> queue = new ArrayBlockingQueue<T>(1);
+
+    private final List<Consumer<T>> listeners = new CopyOnWriteArrayList<>();
 
     private T response;
     private boolean isDone = false;
@@ -54,7 +59,17 @@ public class MessageFuture<T extends MessageResponse> implements Future {
         return this.response;
     }
 
+    public void addListener(Consumer<T> consumer) {
+        this.listeners.add(consumer);
+    }
+
     public void setResponse(T response) {
+        for(Consumer<T> consumer : this.listeners) {
+            consumer.accept(response);
+        }
+
+        this.listeners.clear();
+
         this.queue.offer(response);
     }
 }

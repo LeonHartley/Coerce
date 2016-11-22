@@ -9,9 +9,4 @@ public class ObserveConnectionsRequest extends MessageRequest<ObserveConnections
     public ObserveConnectionsRequest() {
         super(UUID.randomUUID(), ObserveConnectionsResponse.class);
     }
-
-    @Override
-    protected void onResponseReceived(ObserveConnectionsResponse response) {
-
-    }
 }

@@ -39,16 +39,18 @@ public abstract class MessageRequest<T extends MessageResponse> {
 
         try {
             if(this.future != null) {
+                this.future.addListener(this::onResponseReceived);
+
                 this.future.setResponse(object);
             }
-
-            this.onResponseReceived(object);
         } catch (Exception e) {
             log.error("Error while handing response with ID {}", this.getMessageId(), e);
         }
     }
 
-    protected abstract void onResponseReceived(T response);
+    protected void onResponseReceived(T response) {
+
+    }
 
     public String getSender() {
         return this.sender;
