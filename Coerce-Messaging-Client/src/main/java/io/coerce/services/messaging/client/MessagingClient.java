@@ -12,8 +12,8 @@ import io.coerce.services.messaging.client.messages.MessageRegistry;
 import io.coerce.services.messaging.client.messages.requests.MessageRequest;
 import io.coerce.services.messaging.client.messages.response.MessageResponse;
 import io.coerce.services.messaging.client.net.MessagingChannelHandler;
-import io.coerce.services.messaging.core.net.codec.MessageObjectDecoder;
-import io.coerce.services.messaging.core.net.codec.MessageObjectEncoder;
+import io.coerce.services.messaging.core.net.codec.JsonMessageDecoder;
+import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
 
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -41,7 +41,7 @@ public final class MessagingClient {
         final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         return new MessagingClient(alias, new NettyNetworkingClient(configuration),
-                new MessagingChannelHandler(new MessageObjectEncoder(), new MessageObjectDecoder(), executorService), executorService);
+                new MessagingChannelHandler(new JsonMessageEncoder(), new JsonMessageDecoder(), executorService), executorService);
     }
 
     public void connect(String host, int port, Consumer<MessagingClient> onConnect) {

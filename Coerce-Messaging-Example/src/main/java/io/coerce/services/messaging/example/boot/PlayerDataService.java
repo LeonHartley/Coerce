@@ -44,7 +44,7 @@ public class PlayerDataService {
                             }
                         });
                 try {
-                    //final GetServersByServiceNameResponse response = future.get();//
+                    final GetServersByServiceNameResponse response = future.get();//
 
                     final long timeDifference = System.currentTimeMillis() - startTime;
 

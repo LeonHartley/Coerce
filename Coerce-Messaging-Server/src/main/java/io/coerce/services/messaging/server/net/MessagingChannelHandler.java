@@ -7,8 +7,8 @@ import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.channels.NetworkChannelHandler;
 import io.coerce.networking.codec.ObjectDecoder;
 import io.coerce.networking.codec.ObjectEncoder;
-import io.coerce.services.messaging.core.net.codec.MessageObjectDecoder;
-import io.coerce.services.messaging.core.net.codec.MessageObjectEncoder;
+import io.coerce.services.messaging.core.net.codec.JsonMessageDecoder;
+import io.coerce.services.messaging.core.net.codec.JsonMessageEncoder;
 import io.coerce.services.messaging.server.sessions.Session;
 import io.coerce.services.messaging.server.sessions.SessionManager;
 import org.apache.logging.log4j.LogManager;
@@ -16,15 +16,15 @@ import org.apache.logging.log4j.Logger;
 
 public class MessagingChannelHandler implements NetworkChannelHandler<StringMessage> {
 
-    private final MessageObjectEncoder messageEncoder;
-    private final MessageObjectDecoder messageDecoder;
+    private final JsonMessageEncoder messageEncoder;
+    private final JsonMessageDecoder messageDecoder;
     private final SessionManager sessionManager;
 
     private final Logger log = LogManager.getLogger(MessagingChannelHandler.class);
     private volatile int sentMessages = 0;
 
     @Inject
-    public MessagingChannelHandler(final MessageObjectEncoder messageEncoder, final MessageObjectDecoder messageDecoder,
+    public MessagingChannelHandler(final JsonMessageEncoder messageEncoder, final JsonMessageDecoder messageDecoder,
                                    SessionManager sessionManager) {
         this.messageEncoder = messageEncoder;
         this.messageDecoder = messageDecoder;

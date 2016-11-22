@@ -6,10 +6,10 @@ import io.coerce.networking.channels.NetworkBuffer;
 import io.coerce.networking.channels.NetworkChannel;
 import io.coerce.networking.codec.ObjectDecoder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 
-public class MessageObjectDecoder implements ObjectDecoder<StringMessage> {
+public class JsonMessageDecoder implements ObjectDecoder<StringMessage> {
+    private static final Gson gson = new Gson();
 
     @Override
     public StringMessage decode(NetworkBuffer buffer, NetworkChannel channel) {
@@ -21,27 +21,19 @@ public class MessageObjectDecoder implements ObjectDecoder<StringMessage> {
 
         final int length = buffer.readInteger();
 
-        if (length <= 0 || buffer.readableBytes() < length) {
+        if (length < 0 || buffer.readableBytes() < length) {
             buffer.resetReaderIndex();
             return null;
         }
 
         final byte[] bytes = buffer.readBytes(length);
 
-        StringMessage message = null;
-
         try {
-            final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-            ObjectInputStream inputStream = new ObjectInputStream(byteArrayInputStream);
-
-            message = (StringMessage) inputStream.readObject();
-
-            inputStream.close();
-            byteArrayInputStream.close();
-        } catch (Exception e) {
+            return gson.fromJson(new String(bytes, "UTF-8"), StringMessage.class);
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        return message;
+        return null;
     }
 }
