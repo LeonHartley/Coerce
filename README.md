@@ -16,11 +16,6 @@ public class PlayerDataRequest extends MessageRequest<PlayerDataResponse> {
         this.playerId = playerId;
     }
 
-    @Override
-    protected void onResponseReceived(PlayerDataResponse response) {
-        System.out.println("Received user with username: " + response.getUsername());
-    }
-
     public int getPlayerId() {
         return playerId;
     }
@@ -55,7 +50,16 @@ To send requests, first we need to connect to the messaging server and assign an
 final MessagingClient messagingClient = MessagingClient.create("test-client", configuration);
 
 messagingClient.connect("localhost", 8080, (client) -> {
-  messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
+  final MessageFuture<PlayerDataResponse> playerDataFuture = messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
+  
+  // We can add a completion handler by either passing a 3rd argument to the above submitRequest call (a consumer) or we can add one directly to the future
+  playerDataDuture.addListener((playerData) -> {
+      System.out.println("Received user with username: " + playerData.getUsername());
+  });
+  
+  // Or we can block the current thread and wait for a response! 
+  final PlayerDataResponse playerData = playerDataFuture.get();
+  System.out.println("Received user with username: " + playerData.getUsername());
 });
 ```
 
