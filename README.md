@@ -53,7 +53,7 @@ messagingClient.connect("localhost", 8080, (client) -> {
   final MessageFuture<PlayerDataResponse> playerDataFuture = messagingClient.submitRequest("player-service-1", new PlayerDataRequest(1));
   
   // We can add a completion handler by either passing a 3rd argument to the above submitRequest call (a consumer) or we can add one directly to the future
-  playerDataDuture.addListener((playerData) -> {
+  playerDataFuture.addListener((playerData) -> {
       System.out.println("Received user with username: " + playerData.getUsername());
   });
   
