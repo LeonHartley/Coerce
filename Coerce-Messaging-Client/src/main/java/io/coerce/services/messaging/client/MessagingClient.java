@@ -67,6 +67,17 @@ public final class MessagingClient {
         return future;
     }
 
+    public <T extends MessageResponse> void sendMessage(final String destination, final MessageRequest<T> messageRequest) {
+        this.executorService.execute(() -> {
+            messageRequest.setSender(this.alias);
+
+            this.channelHandler.getLastChannel().writeAndFlush(
+                    new StringMessage(messageRequest.getMessageId(), this.alias, destination,
+                            messageRequest.getClass().getName(), JsonUtil.getGsonInstance().toJson(messageRequest)));
+        });
+    }
+
+
     public <T extends MessageResponse> MessageFuture<T> submitRequest(final String destination, final MessageRequest<T> messageRequest) {
         final MessageFuture<T> future = new MessageFuture<T>(messageRequest);
 
