@@ -5,11 +5,19 @@ import com.google.inject.Singleton;
 import io.coerce.commons.io.FileUtil;
 import io.coerce.commons.json.JsonUtil;
 
+import java.io.UnsupportedEncodingException;
+
 public class Configuration {
     private final JsonObject config;
 
-    public Configuration(final String configurationFile) {
-        final String fileContents = FileUtil.loadFile(configurationFile);
+    public Configuration(final String configurationFile) throws Exception {
+        final byte[] data = FileUtil.loadFile(configurationFile);
+
+        if(data == null) {
+            throw new Exception("Failed to load configuration, file not found");
+        }
+
+        final String fileContents = new String(data, "UTF-8");
 
         this.config = JsonUtil.getGsonInstance().fromJson(fileContents,
                 JsonObject.class);

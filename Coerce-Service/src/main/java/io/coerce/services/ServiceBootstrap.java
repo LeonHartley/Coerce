@@ -10,6 +10,8 @@ import io.coerce.services.modules.NetworkingModule;
 import io.coerce.services.modules.StartupModule;
 import io.coerce.services.shutdown.ServiceDisposer;
 
+import java.io.UnsupportedEncodingException;
+
 public class ServiceBootstrap {
     public static <T extends CoerceService> T startService(Class<T> serviceClass, String[] args) {
         final ServiceConfiguration configuration = loadServiceConfiguration(serviceClass);
@@ -41,10 +43,16 @@ public class ServiceBootstrap {
     }
 
     private static Injector createServiceInjector(String[] args, final ServiceConfiguration configuration) {
-        final ModuleMap moduleMap = JsonUtil.getGsonInstance().fromJson(
-                FileUtil.loadFile("configuration/Coerce.json"), ModuleMap.class);
+        ModuleMap moduleMap = null;
 
-        return Guice.createInjector(
+        try {
+            moduleMap = JsonUtil.getGsonInstance().fromJson(
+                    new String(FileUtil.loadFile("configuration/Coerce.json"), "UTF-8"), ModuleMap.class);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return moduleMap == null ? null : Guice.createInjector(
                 new StartupModule(args, configuration),
                 new NetworkingModule(moduleMap.getModules().get("networking"))
                 // Any other modules we might want to add.
@@ -60,7 +68,7 @@ public class ServiceBootstrap {
 
             final String configFileLocation = "configuration/" + serviceClass.getSimpleName() + ".json";
 
-            final String configData = FileUtil.loadFile(configFileLocation);
+            final String configData = new String(FileUtil.loadFile(configFileLocation), "UTF-8");
             return JsonUtil.getGsonInstance().fromJson(configData, configClass);
         } catch (Exception e) {
             System.out.println("[" + ServiceBootstrap.class.getName() + "] " +

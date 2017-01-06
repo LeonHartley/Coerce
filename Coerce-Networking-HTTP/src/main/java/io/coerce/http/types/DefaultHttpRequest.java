@@ -8,8 +8,11 @@ import io.coerce.networking.http.requests.HttpRequest;
 import io.coerce.networking.http.requests.HttpRequestType;
 import io.coerce.networking.http.responses.views.ViewParser;
 import io.coerce.networking.http.sessions.HttpSession;
+import org.apache.commons.lang.CharUtils;
 import org.bigtesting.routd.Route;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,6 +104,11 @@ public class DefaultHttpRequest implements HttpRequest {
 
     @Override
     public String getUrlParameter(final String key) {
+        if(key.equals("*")) {
+
+            return this.route.getSplatParameter(0, this.getLocation());
+        }
+
         return this.route.getNamedParameter(key, this.getLocation());
     }
 
@@ -120,9 +128,24 @@ public class DefaultHttpRequest implements HttpRequest {
             this.formData = new HashMap<>();
         }
 
-        // TODO: parse the form data
+        try {
+            final String[] splitData = new String(this.requestData, "UTF-8").split("&");
 
-        return null;
+            for(String formField : splitData) {
+                final String[] splitField = formField.split("=");
+
+                final String key = URLDecoder.decode(splitField[0], "UTF-8");
+                final String value = splitField.length == 2 ? URLDecoder.decode(splitField[1], "UTF-8") : null;
+
+                this.formData.put(key, value);
+            }
+        } catch (Exception e) {
+            // TODO: logging pipeline
+            e.printStackTrace();
+            return this.formData;
+        }
+
+        return this.formData;
     }
 
     @Override

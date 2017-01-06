@@ -7,10 +7,12 @@
     "backlog": 100,
     "tcpNoDelay": true
   },
+
   "nettyClient": {
     "epoll": true,
     "threads": 2
   },
+
   "httpServer": {
     "requestQueueCapacity": 10000,
     "requestQueueWorkers": 4

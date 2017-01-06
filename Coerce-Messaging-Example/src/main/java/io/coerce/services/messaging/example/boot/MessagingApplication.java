@@ -16,7 +16,7 @@ public class MessagingApplication {
 
     private final MessagingClient messagingClient;
 
-    public MessagingApplication(final String[] args) {
+    public MessagingApplication(final String[] args) throws Exception {
 
        // final Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -38,7 +38,7 @@ public class MessagingApplication {
         });
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         final MessagingApplication application = new MessagingApplication(args);
     }
 }

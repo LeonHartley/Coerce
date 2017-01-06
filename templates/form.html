@@ -1,6 +1,6 @@
 <b th:text="${formData}" th:remove="${!formData}? tag : none"></b>
 
-<form action="" method="post">
+<form action="/form" method="post">
     <p>
         Field 1:<br/>
         <input type="text" name="field1" placeholder="Field 1 content"/>
@@ -8,7 +8,7 @@
 
     <p>
     Field 1:<br/>
-    <input type="text" name="field1" placeholder="Field 1 content"/></p>
+    <input type="text" name="field2" placeholder="Field 2 content"/></p>
 
     <input type="submit" value="Submit" />
 </form>

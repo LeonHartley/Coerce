@@ -30,7 +30,7 @@ public class HttpRequestQueueHandler extends Thread {
                 // Poll the queue for entries and handle them.
                 final DefaultHttpRequest httpRequest = (DefaultHttpRequest) this.requestQueue.getQueue().poll();
 
-                if(httpRequest == null) {
+                if (httpRequest == null) {
                     continue;
                 }
 
@@ -40,7 +40,7 @@ public class HttpRequestQueueHandler extends Thread {
                         httpRequest.getViewParser(),
                         httpRequest.getNetworkChannel());
 
-                if(sessionCookie == null) {
+                if (sessionCookie == null) {
                     final String sessionId = "COERCE-" + UUID.randomUUID();
 
                     // create a session, assign it via this cookie
@@ -49,7 +49,7 @@ public class HttpRequestQueueHandler extends Thread {
                 } else {
                     final HttpSession session = this.requestQueue.getSessionService().getSessionById(sessionCookie.getValue());
 
-                    if(session == null) {
+                    if (session == null) {
                         httpRequest.setSession(this.requestQueue.getSessionService().createSession(sessionCookie.getValue()));
                     } else {
                         httpRequest.setSession(session);
@@ -58,8 +58,8 @@ public class HttpRequestQueueHandler extends Thread {
 
                 log.info("Processing queue item {}", httpRequest.getLocation());
                 this.requestQueue.getRoutingService().processRoute(httpRequest, httpResponse);
-            } catch(Exception e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error("Failed to process HTTP queue", e);
             }
         }
     }

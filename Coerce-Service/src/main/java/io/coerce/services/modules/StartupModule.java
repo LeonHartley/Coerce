@@ -19,6 +19,14 @@ public class StartupModule extends AbstractModule {
     protected void configure() {
         bind(String[].class).toInstance(this.args);
         bind(ServiceConfiguration.class).toInstance(this.serviceConfiguration);
-        bind(CoerceConfiguration.class).toInstance(new CoerceConfiguration());
+
+        try {
+            bind(CoerceConfiguration.class).toInstance(new CoerceConfiguration());
+        } catch (Exception e) {
+            System.out.println("Failed to load Coerce configuration!");
+            e.printStackTrace();
+
+            System.exit(0);
+        }
     }
 }
